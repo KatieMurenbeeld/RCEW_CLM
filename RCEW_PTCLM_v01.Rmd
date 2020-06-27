@@ -50,7 +50,7 @@ Notice that there is a folder within your project direcotry named manage_externa
 
 To checkout the externals:
 
-```{bash checkout_externals}
+```{bash checkout_externals, echo=TRUE, eval=FALSE}
 ./manage_externals/checkout_externals
 ```
 

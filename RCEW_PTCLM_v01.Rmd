@@ -1,5 +1,5 @@
 ---
-title: "RCEW_PTCLM_v01"
+title: "Reynold's Creek Experimental Watershed: Single Point Simulations"
 author: "Katie Murenbeeld"
 date: "6/27/2020"
 output: html_document
@@ -9,22 +9,42 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+## Introduction
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+Reynold's Creek Experimental Watershed (RCEW)...(a little about the location and CZO).
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+About the Community Terrestrial Systems Model (CTSM) and Community Land Model (CLM) explain how different although terms are used almost interchangably. Model simulations. Include a link to the escomp CLM5.0 and the CLM4.5 User's Guides. 
 
-```{r cars}
-summary(cars)
+The purpose of this technical note is to familiarize a LEAF lab user with setting up and running a single point simulation at RCEW with meterological data from one of the AmeriFlux towers on the site. In this document, I am assuming that you have a small or large allocation on the National Center for Atmospheric Research's (NCAR) supercomputer Cheyenne. At this time CLM is not ported on the high performance computer (HPC) R2 at Boise State, but this is a goal to complete soon. 
+
+```{r clm_fig01, echo=FALSE, eval=FALSE}
+
 ```
 
-## Including Plots
+## File Structure and Cloning CTSM
 
-You can also embed plots, for example:
+### File Structure
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+If you don't have a working directory set up already on Cheyenne, do so now. It is a best practice to 
+
+```{bash set_dir, echo=TRUE, eval=FALSE}
+cd /glade/work/$USER/ # go to your work directory on Glade
+mkdir git             # create a new folder that will be the parent for future projects using CLM/CTSM
+cd git                # go to the newly created git folder
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+### Cloning CTSM
+
+From your newly created git folder, clone the CLM/CTSM code. The following code will point to the latest CTSM release:
+
+```{bash git_clone, echo=TRUE, eval=FALSE}
+# Check out the latest release branch and create a new branch for your project
+
+git clone -b release-clm5.0 https:github.com/ESCOMP/CTSM.git ctsm_rcew 
+cd ctsm_rcew   # A new directory was created for your project
+git branch   # Check to see the branches you have now created. There should be a master (or main) as well as a ctsm_rcew branch. The ctsm_rcew branch should have a star next to it.
+ls   # Explore the contents of the new directory
+```
+
+Notice that there is a folder within your project direcotry named manage_externals. This contains a very important script, checkout_externals. 
+

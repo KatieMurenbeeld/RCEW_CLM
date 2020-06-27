@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Reynold's Creek Experimental Watershed (RCEW)...(a little about the location and CZO).
 
-About the Community Terrestrial Systems Model (CTSM) and Community Land Model (CLM) explain how different although terms are used almost interchangably. Model simulations. Include a link to the escomp CLM5.0 and the CLM4.5 User's Guides. 
+About the Community Earth Systems Model (CESM), Community Terrestrial Systems Model (CTSM) and Community Land Model (CLM) explain how different although terms are used almost interchangably. Model simulations. Include a link to the escomp CLM5.0 and the CLM4.5 User's Guides. 
 
 The purpose of this technical note is to familiarize a LEAF lab user with setting up and running a single point simulation at RCEW with meterological data from one of the AmeriFlux towers on the site. In this document, I am assuming that you have a small or large allocation on the National Center for Atmospheric Research's (NCAR) supercomputer Cheyenne. At this time CLM is not ported on the high performance computer (HPC) R2 at Boise State, but this is a goal to complete soon. 
 
@@ -46,5 +46,12 @@ git branch   # Check to see the branches you have now created. There should be a
 ls   # Explore the contents of the new directory
 ```
 
-Notice that there is a folder within your project direcotry named manage_externals. This contains a very important script, checkout_externals. 
+Notice that there is a folder within your project direcotry named manage_externals. This contains a very important script, checkout_externals, which downloads all of the components required for building and running CTSM. These include: CLM (land model component), CISM (sea-ice component), RTM (river routing component), MOSART (river routing component), CIME (contains scripts and tools for running CESM), CMEPS (Earth prediction option of CIME), FATES (dynamic vegetation option of CLM), and PTCLM (point simulation option of CLM). More information about checkout_externals can be found in the README_EXTERNALS.rst file in your project folder. 
+
+To checkout the externals:
+
+```{bash checkout_externals}
+./manage_externals/checkout_externals
+```
+
 

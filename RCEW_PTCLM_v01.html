@@ -372,7 +372,7 @@ summary {
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
 <p>Reynold’s Creek Experimental Watershed (RCEW)…(a little about the location and CZO).</p>
-<p>About the Community Terrestrial Systems Model (CTSM) and Community Land Model (CLM) explain how different although terms are used almost interchangably. Model simulations. Include a link to the escomp CLM5.0 and the CLM4.5 User’s Guides.</p>
+<p>About the Community Earth Systems Model (CESM), Community Terrestrial Systems Model (CTSM) and Community Land Model (CLM) explain how different although terms are used almost interchangably. Model simulations. Include a link to the escomp CLM5.0 and the CLM4.5 User’s Guides.</p>
 <p>The purpose of this technical note is to familiarize a LEAF lab user with setting up and running a single point simulation at RCEW with meterological data from one of the AmeriFlux towers on the site. In this document, I am assuming that you have a small or large allocation on the National Center for Atmospheric Research’s (NCAR) supercomputer Cheyenne. At this time CLM is not ported on the high performance computer (HPC) R2 at Boise State, but this is a goal to complete soon.</p>
 </div>
 <div id="file-structure-and-cloning-ctsm" class="section level2">
@@ -393,8 +393,25 @@ git clone -b release-clm5.0 https:github.com/ESCOMP/CTSM.git ctsm_rcew
 cd ctsm_rcew   # A new directory was created for your project
 git branch   # Check to see the branches you have now created. There should be a master (or main) as well as a ctsm_rcew branch. The ctsm_rcew branch should have a star next to it.
 ls   # Explore the contents of the new directory</code></pre>
-<p>Notice that there is a folder within your project direcotry named manage_externals. This contains a very important script, checkout_externals.</p>
+<p>Notice that there is a folder within your project direcotry named manage_externals. This contains a very important script, checkout_externals, which downloads all of the components required for building and running CTSM. These include: CLM (land model component), CISM (sea-ice component), RTM (river routing component), MOSART (river routing component), CIME (contains scripts and tools for running CESM), CMEPS (Earth prediction option of CIME), FATES (dynamic vegetation option of CLM), and PTCLM (point simulation option of CLM). More information about checkout_externals can be found in the README_EXTERNALS.rst file in your project folder.</p>
+<p>To checkout the externals:</p>
+<pre class="bash"><code>./manage_externals/checkout_externals</code></pre>
 </div>
+</div>
+<div id="set-up-for-single-point-simulations" class="section level2">
+<h2>Set Up for Single Point Simulations</h2>
+</div>
+<div id="set-up-for-point-simulations-ptclm" class="section level2">
+<h2>Set Up for Point Simulations (PTCLM)</h2>
+</div>
+<div id="setting-up-and-running-a-case" class="section level2">
+<h2>Setting Up and Running a Case</h2>
+</div>
+<div id="model-outputs" class="section level2">
+<h2>Model Outputs</h2>
+</div>
+<div id="useful-references" class="section level2">
+<h2>Useful References</h2>
 </div>
 
 

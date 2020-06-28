@@ -55,6 +55,12 @@ To checkout the externals:
 ```
 
 ## Set Up for Single Point Simulations
+Make sure to note which modules are needed. For example, I had to load ncl
+
+```{bash module_load, echo=TRUE, eval=FALSE}
+module load ncl
+```
+
 
 ## Set Up for Point Simulations (PTCLM)
 

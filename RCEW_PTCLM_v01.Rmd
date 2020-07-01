@@ -81,8 +81,9 @@ Note to self: Include the script used to generate the single point surface datas
 ## $CTSMROOT/cime/tools/mapping/gen_domain_files
 
 # Load the correct modules
-module load ncl
-module load intel/18.0.5
+module load intel/17.0.1
+module load ncl/6.6.2
+#module load nco not sure if this is needed, but putting here as a reminder to test.
 module load esmf_libs/7.1.0r
 
 # Set the environmental variables
@@ -146,7 +147,12 @@ setenv CTSMROOT /glade/work/${USER}/git/ctsm_rcew
 
 And then run all of the same commands as in the script above but in the command line. Now, let's break this script down. 
 
-The first step is to load the appropriate modules (i.e. packages and libraries). The module **ncl** (NCAR command language) is required to run some scripts. The Earth Systems Model Framework library (**esmf_lib/7.1.0r**) is needed to run some of the mkmap scripts. In order use **esmf_lib/7.1.0r** you should to use intel version 18.0.5 or 19.0.2.  
+The first step is to load the appropriate modules (i.e. packages and libraries). The module **ncl** (NCAR command language) is required to run some scripts. The Earth Systems Model Framework library (**esmf_libs/7.1.0r**) is needed to run some of the mkmap scripts. In order use **esmf_lib/7.1.0r** and ncl you will need to use intel version 17.0.1 or 18.0.5. **Note!** You can easily look up which versions of modules are required by using the module spider command.
+
+```{bash mod_spid, echo=TRUE, eval=FALSE}
+module spider esmf_libs/7.1.0.
+```
+
 
 ```{bash spt_modload, echo=TRUE, eval=FALSE}
 module load ncl

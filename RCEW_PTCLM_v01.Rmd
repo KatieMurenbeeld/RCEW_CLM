@@ -25,7 +25,7 @@ The purpose of this technical note is to familiarize a LEAF lab user with settin
 
 ### File Structure
 
-If you don't have a working directory set up already on Cheyenne, do so now. It is a best practice to 
+If you don't have a working directory set up already on Cheyenne, do so now. It is a best practice to keep projects in your work directory. 
 
 ```{bash set_dir, echo=TRUE, eval=FALSE}
 cd /glade/work/$USER/ # go to your work directory on Glade
@@ -42,7 +42,7 @@ From your newly created git folder, clone the CLM/CTSM code. The following code 
 
 git clone -b release-clm5.0 https:github.com/ESCOMP/CTSM.git ctsm_rcew 
 cd ctsm_rcew   # A new directory was created for your project
-git branch   # Check to see the branches you have now created. There should be a master (or main) as well as a ctsm_rcew branch. The ctsm_rcew branch should have a star next to it.
+git branch   # Check to see the branches you have now created. There should be a master (or main) as well as a ctsm_rcew branch. The ctsm_rcew branch should have a star next to it meaning that is the active branch or branch you are working in.
 ls   # Explore the contents of the new directory
 ```
 
@@ -52,6 +52,16 @@ To checkout the externals:
 
 ```{bash checkout_externals, echo=TRUE, eval=FALSE}
 ./manage_externals/checkout_externals
+```
+
+It is also a good idea to create separate folders for different projects in your git directory. You can either re-clone ctsm for each proect or do a recursive copy of another project.
+
+For example, I have several projects that live in my git folder.
+
+```{bash git_folder, echo=TRUE, eval=FALSE}
+cd /glade/work/katiem/git
+ls
+> ctsm  ctsm_py  ctsm_sits ctsm_rcew
 ```
 
 ## Set Up for Single Point Simulations
@@ -75,9 +85,11 @@ module load ncl
 module load intel/18.0.5
 module load esmf_libs/7.1.0r
 
-# Set the GRIDNAME and the create date CDAT that will be used later
-CTSMROOT=/glade/work/katiem/git/ctsm_rcew
-CIMEROOT=/glade/work/katiem/git/ctsm_rcew/cime
+# Set the environmental variables
+USER=katiem
+CTSMROOT=/glade/work/${USER}/git/ctsm_rcew
+CIMEROOT=/glade/work/${USER}/git/ctsm_rcew/cime
+
 #GRIDNAME=10x10min_rcewID
 GRIDNAME=10x10min #testing out using a different grid name. I would like to keep rcew in the name if I can.
 RES=10x10min
@@ -123,6 +135,22 @@ cd $CTSMROOT/tools/mksurfdata_map/src
 gmake
 cd ..
 ./mksurfdata.pl -r usrspec -usr_gname $GRIDNAME -usr_gdate $CDATE
+```
+
+As a note, you do not need to create a script to complete this process. You can also work from the command line. In which case you would set environmental variables like so:
+
+```{bash setenv, echo=TRUE, eval=FALSE}
+setenv USER katiem
+setenv CTSMROOT /glade/work/${USER}/git/ctsm_rcew
+```
+
+And then run all of the same commands as in the script above but in the command line. Now, let's break this script down. 
+
+The first step is to load the appropriate modules (i.e. packages and libraries). The module **ncl** (NCAR command language) is required to run some scripts. The Earth Systems Model Framework library (**esmf_lib/7.1.0r**) is needed to run some of the mkmap scripts. In order use **esmf_lib/7.1.0r** you should to use intel version 18.0.5 or 19.0.2.  
+
+```{bash spt_modload, echo=TRUE, eval=FALSE}
+module load ncl
+module load intel/18.0.5
 ```
 
 

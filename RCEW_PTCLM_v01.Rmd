@@ -40,9 +40,12 @@ From your newly created git folder, clone the CLM/CTSM code. The following code 
 ```{bash git_clone, echo=TRUE, eval=FALSE}
 # Check out the latest release branch and create a new branch for your project
 
-git clone -b release-clm5.0 https:github.com/ESCOMP/CTSM.git ctsm_rcew 
+git clone -b release-clm5.0 https://github.com/ESCOMP/CTSM.git ctsm_rcew 
 cd ctsm_rcew   # A new directory was created for your project
 git branch   # Check to see the branches you have now created. There should be a master (or main) as well as a ctsm_rcew branch. The ctsm_rcew branch should have a star next to it meaning that is the active branch or branch you are working in.
+
+# If no new branch, create your own.
+git checkout -b ctsm_rcew
 ls   # Explore the contents of the new directory
 ```
 

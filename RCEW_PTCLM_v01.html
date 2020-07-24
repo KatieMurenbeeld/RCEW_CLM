@@ -489,7 +489,7 @@ module load intel/18.0.5</code></pre>
 <div id="set-up-for-point-simulations-ptclm" class="section level2">
 <h2>4. Set Up for Point Simulations (PTCLM)</h2>
 <p>The <strong>P</strong>oin<strong>T</strong> <strong>CLM</strong> runs through the same steps for creating single point domain and surface data files as in section 2.</p>
-<p>Once again load the appropriate modules in the correct order.</p>
+<p>Once again load the appropriate modules in the correct order (same as below). <strong>NOTE</strong> Depending on if you use miniconda you may or may mot need to load all of the modules if they are already in the miniconda environment. For example, here I do not <em>module load python/2</em> because I will activate a python 2 miniconda environment later.</p>
 <pre class="bash"><code>module load ncarenv/1.3
 module load intel/17.0.1
 module load ncarcompilers/0.5.0
@@ -506,6 +506,18 @@ cd $CTSMROOT/tools/PTCLM
 <p>There is a known issue within the PTCLMmkdata code which will need to be addressed before you can continue on with the process. Use the text editor of your choice to open PTCLMmkdata. In line 552 you will need to remove the “export” command.</p>
 <pre class="bash"><code>- cmd = &quot;export REGRID_PROC=1; &quot;+mkmapdat_dir+&quot;/mkmapdata.sh --gridfile &quot;+scripgridfile+&quot; --res &quot;+clmres+&quot; --gridtype regional -v &gt; &quot;+mapdir+&quot;/mkmapdata.log&quot;;
 + cmd = mkmapdat_dir+&quot;/mkmapdata.sh --gridfile &quot;+scripgridfile+&quot; --res &quot;+clmres+&quot; --gridtype regional -v &gt; &quot;+mapdir+&quot;/mkmapdata.log&quot;;</code></pre>
+<p>Once all of the modules are loaded, the tools are built, and the PTCLMmkdata script is updated open up a qinteractive session in order to complete the map generation and file creation process. The process can take several hours, so I suggest setting the walltime to 6 hours.</p>
+<pre class="bash"><code>qinteractive -X -l walltime=4:00:00</code></pre>
+<p>Load a python 2 compatible miniconda environment (optional).</p>
+<pre class="bash"><code>conda activate python2</code></pre>
+<p>After entering the qinteractive environment, you will need to reset environmental variables.</p>
+<pre class="bash"><code>CSMDATA=/glade/p/cesm/cseg/inputdata
+CTSMROOT=/glade/work/katiem/git/ctsm_rcew
+SITE=US-Rwe</code></pre>
+<p>Next, run the PTCLMsublist, which will…</p>
+<pre class="bash"><code>./PTCLMsublist -l $SITE -d $CSMDATA -o --verbose --account=UBOI0003 --mach=cheyenne</code></pre>
+<p>The outcome will be a command to copy and paste into the terminal. It will look something like this…</p>
+<pre class="bash"><code>./PTCLMmkdata -s US-Rwe -d /glade/p/cesm/cseg/inputdata</code></pre>
 </div>
 <div id="setting-up-and-running-a-case" class="section level2">
 <h2>5. Setting Up and Running a Case</h2>

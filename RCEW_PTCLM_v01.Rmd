@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Introduction
+## 1. Introduction
 
 Reynold's Creek Experimental Watershed (RCEW)...(a little about the location and CZO).
 
@@ -21,9 +21,9 @@ The purpose of this technical note is to familiarize a LEAF lab user with settin
 
 ```
 
-## File Structure and Cloning CTSM
+## 2. File Structure and Cloning CTSM
 
-### File Structure
+### 2.1 File Structure
 
 If you don't have a working directory set up already on Cheyenne, do so now. It is a best practice to keep projects in your work directory. 
 
@@ -33,7 +33,7 @@ mkdir git             # create a new folder that will be the parent for future p
 cd git                # go to the newly created git folder
 ```
 
-### Cloning CTSM
+### 2.2 Cloning CTSM
 
 From your newly created git folder, clone the CLM/CTSM code. The following code will point to the latest CTSM release:
 
@@ -67,7 +67,7 @@ ls
 > ctsm  ctsm_py  ctsm_sits ctsm_rcew
 ```
 
-## Set Up for Single Point Simulations
+## 3. Set Up for Single Point Simulations
 Note to self: Include the script used to generate the single point surface dataset. Then breakout and step through the different parts of the script. Reference = CLM5.0 UG 1.3.5 and 1.6.3.5.
 
 ```{bash spt_creation, echo=TRUE, eval=FALSE}
@@ -144,13 +144,13 @@ cd ..
 As a note, you do not need to create a script to complete this process. You can also work from the command line. In which case you would set environmental variables like so:
 
 ```{bash setenv, echo=TRUE, eval=FALSE}
-setenv USER katiem
-setenv CTSMROOT /glade/work/${USER}/git/ctsm_rcew
+USER=katiem
+CTSMROOT=/glade/work/${USER}/git/ctsm_rcew
 ```
 
 And then run all of the same commands as in the script above but in the command line. Now, let's break this script down. 
 
-The first step is to load the appropriate modules (i.e. packages and libraries). The module **ncl** (NCAR command language) is required to run some scripts. The Earth Systems Model Framework library (**esmf_libs/7.1.0r**) is needed to run some of the mkmap scripts. In order use **esmf_lib/7.1.0r** and ncl you will need to use intel version 17.0.1 or 18.0.5. **Note!** You can easily look up which versions of modules are required by using the module spider command.
+The first step is to load the appropriate modules (i.e. packages and libraries). The module **ncl** (NCAR command language) is required to run some of the scripts. The Earth Systems Model Framework library (**esmf_libs/7.1.0r**) is needed to run some of the mkmap scripts. In order use **esmf_lib/7.1.0r** and ncl you will need to use intel version 17.0.1 or 18.0.5. **Note!** You can easily look up which versions of modules are required by using the module spider command.
 
 ```{bash mod_spid, echo=TRUE, eval=FALSE}
 module spider esmf_libs/7.1.0.
@@ -163,11 +163,45 @@ module load intel/18.0.5
 ```
 
 
-## Set Up for Point Simulations (PTCLM)
+## 4. Set Up for Point Simulations (PTCLM)
 
-## Setting Up and Running a Case
+The **P**oin**T** **CLM** runs through the same steps for creating single point domain and surface data files as in section 2. 
 
-## Model Outputs
+Once again load the appropriate modules in the correct order.
 
-## Useful References
+```{bash ptcml_modload, echo=TRUE, eval=FALSE}
+module load ncarenv/1.3
+module load intel/17.0.1
+module load ncarcompilers/0.5.0
+module load nco/4.7.9
+module load netcdf/4.7.3
+module load ncl/6.6.2 (H)
+module load mpt/2.22
+module load esmf_libs/7.1.0r (H)
+module load ncview/2.1.7
+```
+
+Change directory to the PTCLM folder. From there execute the buildtools script. Buildtools will...
+
+```{bash ptcml_folder, echo=TRUE, eval=FALSE}
+CTSMROOT=/glade/work/katiem/git/ctsm_rcew
+cd $CTSMROOT/tools/PTCLM
+./buildtools
+```
+
+There is a known issue within the PTCLMmkdata code which will need to be addressed before you can continue on with the process. Use the text editor of your choice to open PTCLMmkdata. In line 552 you will need to remove the "export" command.
+
+```{bash PTCLMmkdata, echo=TRUE, eval=FALSE}
+- cmd = "export REGRID_PROC=1; "+mkmapdat_dir+"/mkmapdata.sh --gridfile "+scripgridfile+" --res "+clmres+" --gridtype regional -v > "+mapdir+"/mkmapdata.log";
++ cmd = mkmapdat_dir+"/mkmapdata.sh --gridfile "+scripgridfile+" --res "+clmres+" --gridtype regional -v > "+mapdir+"/mkmapdata.log";
+```
+
+
+## 5. Setting Up and Running a Case
+
+## 6. Accelerated Spin Up
+
+## 7. Model Outputs
+
+## 8. Useful References
 

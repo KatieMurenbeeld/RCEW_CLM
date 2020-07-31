@@ -1,7 +1,7 @@
 ---
 title: "Reynold's Creek Experimental Watershed: Single Point Simulations"
 author: "Katie Murenbeeld"
-date: "6/27/2020"
+date: "07/31/2020"
 output: html_document
 ---
 
@@ -25,7 +25,7 @@ The purpose of this technical note is to familiarize a LEAF lab user with settin
 
 ### 2.1 File Structure
 
-If you don't have a working directory set up already on Cheyenne, do so now. It is a best practice to keep projects in your work directory. 
+If you don't have a git working directory set up already on Cheyenne, do so now. It is a best practice to keep projects in their own work directory within this git working directory. 
 
 ```{bash set_dir, echo=TRUE, eval=FALSE}
 cd /glade/work/$USER/ # go to your work directory on Glade
@@ -103,7 +103,7 @@ There is a known issue within the PTCLMmkdata code which will need to be address
 + cmd = mkmapdat_dir+"/mkmapdata.sh --gridfile "+scripgridfile+" --res "+clmres+" --gridtype regional -v > "+mapdir+"/mkmapdata.log";
 ```
 
-Once all of the modules are loaded, the tools are built, and the PTCLMmkdata script is updated open up a qinteractive session in order to complete the map generation and file creation process. The process can take several hours, so I suggest setting the walltime to 6 hours.
+Once all of the modules are loaded, the tools are built, and the PTCLMmkdata script is updated, open up a qinteractive session in order to complete the map generation and file creation process. The process can take several hours, so I suggest setting the walltime to 6 hours.
 
 ```{bash ptcml_qint, echo=TRUE, eval=FALSE}
 qinteractive -X -l walltime=4:00:00
@@ -126,7 +126,8 @@ Next, run the PTCLMsublist, which will...
 ```{bash ptclm_sublist, echo=TRUE, eval=FALSE}
 ./PTCLMsublist -l $SITE -d $CSMDATA -o --verbose --account=UBOI0003 --mach=cheyenne
 ```
-The outcome will be a command to copy and paste into the terminal. It will look something like this...
+
+PTCLMsublist will output a command to copy and paste into the terminal. It will look something like this...
 ```{bash ptclm_mkdata, echo=TRUE, eval=FALSE}
 ./PTCLMmkdata -s US-Rwe -d /glade/p/cesm/cseg/inputdata
 ```

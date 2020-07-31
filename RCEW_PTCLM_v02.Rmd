@@ -134,6 +134,10 @@ PTCLMsublist will output a command to copy and paste into the terminal. It will 
 
 ## 5. Accelerated Spin Up
 
+Something something, working with soils, getting to a steady state. Need to do a spin up. 
+
+Within this section, also some of the (not so basic) basics for creating and submitting a CLM "case", or simulation.
+
 ## 6. Setting Up and Running a Case
 
 ## 7. Model Outputs

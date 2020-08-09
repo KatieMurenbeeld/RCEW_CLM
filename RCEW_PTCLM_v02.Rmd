@@ -132,11 +132,96 @@ PTCLMsublist will output a command to copy and paste into the terminal. It will 
 ./PTCLMmkdata -s US-Rwe -d /glade/p/cesm/cseg/inputdata
 ```
 
+**NOTE** Make sure to add in where to find the newly created files. 
+
 ## 5. Accelerated Spin Up
 
 Something something, working with soils, getting to a steady state. Need to do a spin up. 
 
 Within this section, also some of the (not so basic) basics for creating and submitting a CLM "case", or simulation.
+
+Make sure you are in your CTSMROOT (the base directory where "cime" and "components" live). Then change directories to cime/scripts. Within the cime/scripts directory is the create_newcase script.  
+```{bash spinup_createnew, echo=TRUE, eval=FALSE}
+cd cime/scripts/
+
+./create_newcase --compset 2000_DATM%GSWP3v1_CLM50%BGC_SICE_SOCN_SROF_SGLC_SWAV --res f09_g17 --case /glade/work/katiem/SITS_cases/Rwe1_CLM50spinup_001 --run-unsupported --project UBOI0003
+```
+
+In order to create a new case there are 3 required (and several optional) arguments: compset, res, and case. The compset... The res... The case... The other arguments used here are run-unsupported and project. The run-unsupported ... The project... If you are interested in the arguments please see the help documentation by running
+
+```{bash newcase_help, echo=TRUE, eval=FALSE}
+./create_newcase --help
+```
+
+Once the new case is created, move into the newly created case directory.
+
+```{bash spinup_cdcase, echo=TRUE, eval=FALSE}
+cd /glade/work/katiem/SITS_cases/Rwe1_CLM50spinup_001
+```
+From here you will update some enviroenmental variables for the case using the command xmlchange. These variables are specific to the machine (computer). As a note. ./xmlquery...
+For a list and more information on the variables you can search for the variables on this webpage http://www.cesm.ucar.edu/models/cesm2/settings/2.1.0/drv_input.html. (I suggest bookmarking this page!)
+
+```{bash env_mach_pes, echo=TRUE, eval=FALSE}
+./xmlchange MPILIB=mpi-serial
+./xmlchange --file env_mach_pes.xml --id COST_PES --val 36
+./xmlchange --file env_mach_pes.xml --id TOTALPES --val 1
+./xmlchange --file env_mach_pes.xml --id NTASKS --val 1
+./xmlchange --file env_mach_pes.xml --id NTASKS_PER_INST --val 1
+./xmlchange --file env_mach_pes.xml --id ROOTPE --val 0
+```
+
+After you've updated the above variables, you are now ready to setup the case. When you setup the case....
+
+```{bash spinup_casesetup, echo=TRUE, eval=FALSE}
+# Remember you are still in the case directory
+
+./case.setup
+
+```
+
+Once your case is setup you will update many more variables using the ./xmlchange command. 
+
+```{bash env_run01, echo=TRUE, eval=FALSE}
+./xmlchange --file env_run.xml --id CLM_FORCE_COLDSTART --val on
+./xmlchange --file env_run.xml --id CLM_NML_USE_CASE --val 1850_control
+./xmlchange --file env_run.xml --id DATM_CLMNCEP_YR_START --val 1901
+./xmlchange --file env_run.xml --id DATM_CLMNCEP_YR_END --val 1920
+./xmlchange --file env_run.xml --id DATM_PRESAERO --val clim_1850
+./xmlchange --file env_run.xml --id CCSM_CO2_PPMV --val 284.7
+./xmlchange --file env_run.xml --id STOP_OPTION --val nyears
+./xmlchange --file env_run.xml --id RUN_REFDATE --val 0001-01-01
+./xmlchange --file env_run.xml --id RUN_STARTDATE --val 0001-01-01
+
+# Turn on the accelerated spinup
+./xmlchange --file env_run.xml --id CLM_ACCELERATED_SPINUP --val on
+
+# Set the total number of years to run. 
+./xmlchange --file env_run.xml --id STOP_N --val 500
+# Set the interval (in years) where a restart file will be created.
+./xmlchange --file env_run.xml --id REST_N --val 100
+
+```
+
+Next, you will point to the domain files you created in section 3. 
+
+```{bash spinup_domain, echo=TRUE, eval=FALSE}
+
+./xmlchange --file env_run.xml --id ATM_DOMAIN_FILE --val domain.lnd.1x1pt_US-Rwe_navy.200721.nc
+./xmlchange --file env_run.xml --id ATM_DOMAIN_PATH --val /glade/work/katiem/SITS_data
+./xmlchange --file env_run.xml --id LND_DOMAIN_FILE --val domain.lnd.1x1pt_US-Rwe_navy.200721.nc
+./xmlchange --file env_run.xml --id LND_DOMAIN_PATH --val /glade/work/katiem/SITS_data
+
+
+```
+
+Next, you will update the clm_user_nl (the CLM user namelist) file. In this file... You will set the surface data file to the surfdata file you created in section 3. 
+
+```{bash spinup_clmusernl, echo=TRUE, eval=FALSE}
+
+```
+
+
+
 
 ## 6. Setting Up and Running a Case
 

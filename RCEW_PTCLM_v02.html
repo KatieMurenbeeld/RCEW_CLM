@@ -410,7 +410,7 @@ ls
 <div id="set-up-for-point-simulations-ptclm" class="section level2">
 <h2>3. Set Up for Point Simulations (PTCLM)</h2>
 <p>The <strong>P</strong>oin<strong>T</strong> <strong>CLM</strong> runs through the same steps for creating single point domain and surface data files as in section 2. PTCLM is a simpler way to create these files specifically for tower sites. The file PTCLMmkdata runs the tools to get datasets set up, and copies them to a location you can use, including the changes needed for a case to use the dataset with namelist and XML changes. There are a few steps you will need to take before you can run the PTCLMmkdata script.</p>
-<p>First, you will need to add tower site specific data to the</p>
+<p>First, you will need to add tower site specific data to your location of interest. …</p>
 <p>Once again load the appropriate modules in the correct order (same as below). <strong>NOTE</strong> Depending on if you use miniconda you may or may mot need to load all of the modules if they are already in the miniconda environment. For example, here I do not <em>module load python/2</em> because I will activate a python 2 miniconda environment later.</p>
 <pre class="bash"><code>module load ncarenv/1.3
 module load intel/17.0.1
@@ -429,7 +429,7 @@ cd $CTSMROOT/tools/PTCLM
 <pre class="bash"><code>- cmd = &quot;export REGRID_PROC=1; &quot;+mkmapdat_dir+&quot;/mkmapdata.sh --gridfile &quot;+scripgridfile+&quot; --res &quot;+clmres+&quot; --gridtype regional -v &gt; &quot;+mapdir+&quot;/mkmapdata.log&quot;;
 + cmd = mkmapdat_dir+&quot;/mkmapdata.sh --gridfile &quot;+scripgridfile+&quot; --res &quot;+clmres+&quot; --gridtype regional -v &gt; &quot;+mapdir+&quot;/mkmapdata.log&quot;;</code></pre>
 <p>Once all of the modules are loaded, the tools are built, and the PTCLMmkdata script is updated, open up a qinteractive session in order to complete the map generation and file creation process. The process can take several hours, so I suggest setting the walltime to 6 hours.</p>
-<pre class="bash"><code>qinteractive -X -l walltime=4:00:00</code></pre>
+<pre class="bash"><code>qinteractive -X -l walltime=06:00:00</code></pre>
 <p>Load a python 2 compatible miniconda environment (optional).</p>
 <pre class="bash"><code>conda activate python2</code></pre>
 <p>After entering the qinteractive environment, you will need to reset environmental variables.</p>
@@ -440,6 +440,8 @@ SITE=US-Rwe</code></pre>
 <pre class="bash"><code>./PTCLMsublist -l $SITE -d $CSMDATA -o --verbose --account=UBOI0003 --mach=cheyenne</code></pre>
 <p>PTCLMsublist will output a command to copy and paste into the terminal. It will look something like this…</p>
 <pre class="bash"><code>./PTCLMmkdata -s US-Rwe -d /glade/p/cesm/cseg/inputdata</code></pre>
+<p>What is this command doing? …</p>
+<p>Again, this process can take a long time. You may need to run this command multiple times. However, once the mapping files are created they will be skipped over if you have to rerun the PTCLMmkdata command.</p>
 <p><strong>NOTE</strong> Make sure to add in where to find the newly created files.</p>
 </div>
 <div id="accelerated-spin-up" class="section level2">
@@ -450,7 +452,7 @@ SITE=US-Rwe</code></pre>
 <pre class="bash"><code>cd cime/scripts/
 
 ./create_newcase --compset 2000_DATM%GSWP3v1_CLM50%BGC_SICE_SOCN_SROF_SGLC_SWAV --res f09_g17 --case /glade/work/katiem/SITS_cases/Rwe1_CLM50spinup_001 --run-unsupported --project UBOI0003</code></pre>
-<p>In order to create a new case there are 3 required (and several optional) arguments: compset, res, and case. The compset… The res… The case… The other arguments used here are run-unsupported and project. The run-unsupported … The project… If you are interested in the arguments please see the help documentation by running</p>
+<p>In order to create a new case there are 3 required arguments: compset, res, and case. The compset… The res… The case… The other arguments used here are run-unsupported and project. The run-unsupported … The project… If you are interested in the arguments please see the help documentation by running</p>
 <pre class="bash"><code>./create_newcase --help</code></pre>
 <p>Once the new case is created, move into the newly created case directory.</p>
 <pre class="bash"><code>cd /glade/work/katiem/SITS_cases/Rwe1_CLM50spinup_001</code></pre>
@@ -492,8 +494,54 @@ SITE=US-Rwe</code></pre>
 ./xmlchange --file env_run.xml --id LND_DOMAIN_FILE --val domain.lnd.1x1pt_US-Rwe_navy.200721.nc
 ./xmlchange --file env_run.xml --id LND_DOMAIN_PATH --val /glade/work/katiem/SITS_data
 </code></pre>
-<p>Next, you will update the clm_user_nl (the CLM user namelist) file. In this file… You will set the surface data file to the surfdata file you created in section 3.</p>
-<pre class="bash"><code></code></pre>
+<p>Next, you will update the user_nl_clm (the CLM user namelist) file. In this file… You will set the surface data file to the surfdata file you created in section 3.</p>
+<pre class="bash"><code>echo &quot;fsurdat = &#39;/glade/work/katiem/SITS_data/surfdata_1x1pt_US-Rwe_hist_16pfts_Irrig_CMIP6_simyr2000_c200721.nc&#39;&quot; &gt;&gt; user_nl_clm
+echo &quot;hist_mfilt = 20&quot; &gt;&gt; user_nl_clm
+echo &quot;hist_nhtfrq = -8760&quot; &gt;&gt; user_nl_clm
+
+echo &quot;hist_empty_htapes = .true.&quot; &gt;&gt; user_nl_clm
+echo &quot;hist_fincl1 = &#39;TOTECOSYSC&#39;, &#39;TOTECOSYSN&#39;, &#39;TOTSOMC&#39;, &#39;TOTSOMN&#39;, &#39;TOTVEGC&#39;, &#39;TOTVEGN&#39;, &#39;TLAI&#39;, &#39;GPP&#39;, &#39;CPOOL&#39;, &#39;NPP&#39;, &#39;TWS&#39;,
+&#39;H2OSNO&#39;&quot; &gt;&gt; user_nl_clm
+
+echo &quot;mapalgo = &#39;nn&#39;,&#39;nn&#39;,&#39;nn&#39;,&#39;nn&#39;,&#39;nn&#39;&quot; &gt;&gt; user_nl_datm</code></pre>
+<p>If you have your own climate or atmospheric forcing data to use (for example you want to use the atmospheric data from the flux tower at your site) you can now copy over the user_datm.streams files you created (see section X).</p>
+<pre class="bash"><code>cp ../Rwe1_CLM50spinup_001/user_datm.streams.txt.* .</code></pre>
+<p>Double check the your namelist file (user_nl_clm) using your text editor of choice or the command.</p>
+<pre class="bash"><code>vim user_nl_clm
+
+## or...
+cat user_nl_clm</code></pre>
+<p>Now, build and submit the spinup case!</p>
+<pre class="bash"><code>qcmd --./case.build
+
+## This may take a few minutes. When complete you should see:
+## MODEL BUILD HAS FINISHED SUCCESSFULLY
+
+./case.submit</code></pre>
+<p>To check on the progress you can see the jobs you’ve submitting using the qstat command.</p>
+<pre class="bash"><code>qstat -u katiem  # the -u argument is for user, so really it is qstat -u $USER</code></pre>
+<p>You can also check your scratch or scratch archive to check on the progress of the spinup case.</p>
+<pre class="bash"><code>cd /glade/scratch/$USER/archive/$CASE/
+ls 
+
+# or...
+cd /glade/scratch/$USER/$CASE/run
+ls
+</code></pre>
+<pre><code>## bash: line 0: cd: /glade/scratch/kathrynmurenbeeld/archive//: No such file or directory
+## RCEW_CLM.Rproj
+## RCEW_PTCLM_v01.Rmd
+## RCEW_PTCLM_v01.html
+## RCEW_PTCLM_v02.Rmd
+## RCEW_PTCLM_v02.html
+## README.md
+## bash: line 4: cd: /glade/scratch/kathrynmurenbeeld//run: No such file or directory
+## RCEW_CLM.Rproj
+## RCEW_PTCLM_v01.Rmd
+## RCEW_PTCLM_v01.html
+## RCEW_PTCLM_v02.Rmd
+## RCEW_PTCLM_v02.html
+## README.md</code></pre>
 </div>
 <div id="setting-up-and-running-a-case" class="section level2">
 <h2>6. Setting Up and Running a Case</h2>

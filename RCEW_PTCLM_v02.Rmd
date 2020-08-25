@@ -142,7 +142,7 @@ Again, this process can take a long time. You may need to run this command multi
 
 **NOTE** Make sure to add in where to find the newly created files. 
 
-## 5. Accelerated Spin Up
+## 4. Accelerated Spin Up
 
 Something something, working with soils, getting to a steady state. Need to do a spin up. 
 
@@ -270,7 +270,7 @@ qstat -u katiem  # the -u argument is for user, so really it is qstat -u $USER
 
 You can also check your scratch or scratch archive to check on the progress of the spinup case.
 
-```{bash}
+```{bash sp_scratch, echo=TRUE, eval=FALSE}
 cd /glade/scratch/$USER/archive/$CASE/
 ls 
 

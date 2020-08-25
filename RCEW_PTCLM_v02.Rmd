@@ -2,7 +2,10 @@
 title: "Reynold's Creek Experimental Watershed: Single Point Simulations"
 author: "Katie Murenbeeld"
 date: "07/31/2020"
-output: html_document
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
 ---
 
 ```{r setup, include=FALSE}

@@ -75,7 +75,7 @@ ls
 
 The **P**oin**T** **CLM** runs through the same steps for creating single point domain and surface data files as in section 2. PTCLM is a simpler way to create these files specifically for tower sites.  The file PTCLMmkdata runs the tools to get datasets set up, and copies them to a location you can use, including the changes needed for a case to use the dataset with namelist and XML changes. There are a few steps you will need to take before you can run the PTCLMmkdata script.
 
-First, you will need to add tower site specific data to your location of interest. ...
+**First**, you will need to add tower site specific data to your location of interest. ...
 
 Once again load the appropriate modules in the correct order (same as below). **NOTE** Depending on if you use miniconda you may or may mot need to load all of the modules if they are already in the miniconda environment. For example, here I do not *module load python/2* because I will activate a python 2 miniconda environment later.
 

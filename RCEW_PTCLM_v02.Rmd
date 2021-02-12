@@ -16,13 +16,13 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Reynold's Creek Experimental Watershed (RCEW)...(a little about the location and CZO).
 
-About the Community Earth Systems Model (CESM), Community Terrestrial Systems Model (CTSM) and Community Land Model (CLM) explain how different although terms are used almost interchangably. Model simulations. Instructions for this tech note have been edited and aggregated from the escomp [CLM5.0 User's guide](https://escomp.github.io/ctsm-docs/versions/release-clm5.0/html/users_guide/index.html) specifically section 1.7 and the [CLM4.5 User's Guide](https://www.cesm.ucar.edu/models/cesm1.2/clm/models/lnd/clm/doc/UsersGuide/f101.html), specifically Chapter 5.  
-
-The purpose of this technical note is to familiarize a LEAF lab user (or any user) with setting up and running a single point simulation at RCEW with meterological data from one of the AmeriFlux towers on the site. In this document, I am assuming that you have a small or large allocation on the National Center for Atmospheric Research's (NCAR) supercomputer Cheyenne. At this time CLM is not ported on the high performance computer (HPC) R2 at Boise State, but this is a goal to complete soon. 
-
 ```{r clm_fig01, echo=FALSE, eval=TRUE}
 knitr::include_graphics("figures/ReyMtn4_900_675_80auto.jpg")
 ```
+
+About the Community Earth Systems Model (CESM), Community Terrestrial Systems Model (CTSM) and Community Land Model (CLM) explain how different although terms are used almost interchangably. Model simulations. Instructions for this tech note have been edited and aggregated from the escomp [CLM5.0 User's guide](https://escomp.github.io/ctsm-docs/versions/release-clm5.0/html/users_guide/index.html) specifically section 1.7 and the [CLM4.5 User's Guide](https://www.cesm.ucar.edu/models/cesm1.2/clm/models/lnd/clm/doc/UsersGuide/f101.html), specifically Chapter 5.  
+
+The purpose of this technical note is to familiarize a LEAF lab user (or any user) with setting up and running a single point simulation at RCEW with meterological data from one of the AmeriFlux towers on the site. In this document, I am assuming that you have a small or large allocation on the National Center for Atmospheric Research's (NCAR) supercomputer Cheyenne. At this time CLM is not ported on the high performance computers (HPC), R2 and Borah, at Boise State, but this is a goal to complete soon. 
 
 ## 2. File Structure and Cloning CTSM
 
@@ -73,9 +73,37 @@ ls
 
 ## 3. Set Up for Point Simulations (PTCLM)
 
-The **P**oin**T** **CLM** runs through the same steps for creating single point domain and surface data files as in section 2. PTCLM is a simpler way to create these files specifically for tower sites.  The file PTCLMmkdata runs the tools to get datasets set up, and copies them to a location you can use, including the changes needed for a case to use the dataset with namelist and XML changes. There are a few steps you will need to take before you can run the PTCLMmkdata script.
+The **P**oin**T** **CLM** runs through the steps for creating single point domain and surface data files (link to html for single point and region surface data file generation). PTCLM is a simpler way to create these files specifically for Ameriflux tower sites. The file PTCLMmkdata runs the tools to get datasets set up, and copies them to a location you can use, including the changes needed for a case to use the dataset with namelist and XML changes. There are a few steps you will need to take before you can run the PTCLMmkdata script.
 
-**First**, you will need to add tower site specific data to your location of interest. ...
+**First**, you will need to add tower site specific data to your location of interest. For more information see the CLM5.0 User's Guide [Adding PTCLM site data](https://escomp.github.io/ctsm-docs/versions/release-clm5.0/html/users_guide/running-PTCLM/adding-ptclm-site-data.html). First, go to 
+
+```{bash, site_data, echo=TRUE, eval=FALSE}
+# First, set up your "root" environment
+CTSMROOT=/glade/work/katiem/git/ctsm_rcew
+# Then, change to the PTCLM_sitedata folder
+cd $CTSMROOT/tools/PTCLM/PTCLM_sitedata
+```
+
+There you will find three different text files. One for site data (PTCLMDATA_sitedata.txt), one for plant functional type data (PTCLMDATA_pftdata.txt), and one for soils data (PTCLMDATA_soildata.txt). 
+
+The **PTCLMDATA_sitedata.txt** contains the following (comma separated) headers: site_code,name,state,lon,lat,elev,startyear,endyear,alignyear,timestep,campaign
+
+* *site_code*: abbreviation for the tower site
+* *name*: long name for the tower site, make sure to use ""
+* *state*: state where tower site is located, use abbrevation
+* *lon*: longitude location of the tower site (decimal degrees)
+* *lat*: latitude of the tower site (decimal degrees)
+* *elev*: elevation of the tower site (meters)
+* *startyear*: year when data collection began
+* *endyear*: year when data collection ended
+* *alingyear*: currently unused, use *startyear* as a filler
+* *timestep*: timestep that data is collected (minutes)
+* *campaign*: funding for the site, for example AmeriFlux, Fluxnet-Canada, etc.
+
+For RCEW we will be using the Reynolds Mountain East tower site, so the following information can be added to the **PTCLMDATA_sitedata.txt** using your text editor of choice.
+
+US-Rwe,"RCEW Reynolds Mountain East",ID,-116.7591023,43.0653469,2098,2003,2007,2003,30,AmeriFlux
+
 
 Once again load the appropriate modules in the correct order (same as below). **NOTE** Depending on if you use miniconda you may or may mot need to load all of the modules if they are already in the miniconda environment. For example, here I do not *module load python/2* because I will activate a python 2 miniconda environment later.
 

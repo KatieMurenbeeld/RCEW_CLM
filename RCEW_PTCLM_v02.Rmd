@@ -30,6 +30,13 @@ The purpose of this technical note is to familiarize a LEAF lab user (or any use
 
 For this note, users should have access to the Cheyenne (or next gen HPC) supercomputer and a conversational knowledge of a shell type language (bash, sh, csh, tsh, etc.)
 
+The genreal outline of this technical note will be as followes:
+
+* First, setting up the file structure on Cheyenne and cloning CTSM
+* Second, running Point CLM (PTCLM) make tools to generate the single point surfacedata files needed for running simulations at the tower site of choice.
+* Third, running an accelerated spin up for thw tower site.
+* Finally, running simulations at your tower site!
+
 ## 2. File Structure and Cloning CTSM
 
 ### 2.1 File Structure
@@ -80,6 +87,8 @@ ls
 ## 3. Set Up for Point Simulations (PTCLM)
 
 The **P**oin**T** **CLM** runs through the steps for creating single point domain and surface data files (link to html for single point and region surface data file generation). PTCLM is a simpler way to create these files specifically for Ameriflux tower sites. The file PTCLMmkdata runs the tools to get datasets set up, and copies them to a location you can use, including the changes needed for a case to use the dataset with namelist and XML changes. There are a few steps you will need to take before you can run the PTCLMmkdata script.
+
+### 3.1 Site Specific Data
 
 **First**, you will need to add tower site specific data to your location of interest. For more information see the CLM5.0 User's Guide [Adding PTCLM site data](https://escomp.github.io/ctsm-docs/versions/release-clm5.0/html/users_guide/running-PTCLM/adding-ptclm-site-data.html). First, go to 
 
@@ -132,7 +141,7 @@ The list of pft indexes can be found here <link>:
 
 Make a table of pfts with the acronym and index #
 
-### 3.1 Modules
+### 3.2 Loading Modules
 Modules are ... You will need to load the appropriate modules in a specific order. order. **NOTE** Depending on if you use miniconda you may or may mot need to load all of the modules if they are already in the miniconda environment. For example, here I do not *module load python/2* because I will activate a python 2 miniconda environment later.
 
 ```{bash ptcml_modload, echo=TRUE, eval=FALSE}
@@ -154,6 +163,8 @@ module load esmf_libs/7.1.0r (H) #Makes Earth Systems Model Framework (ESMF) lib
 
 module load ncview/2.1.7 #Loads ncview, which is a quick way to visualize outputs. Type ncview file_name.nc to open a graphical user interface (GUI) for data visualization. 
 ```
+
+### 3.3 Running PTCLMmkdata
 
 Change directory to the PTCLM folder. From there execute the buildtools script. Buildtools will...
 

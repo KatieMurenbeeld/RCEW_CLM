@@ -403,6 +403,13 @@ summary {
 <h3>1.2 Purpose and Technical Assumptions</h3>
 <p>The purpose of this technical note is to familiarize a LEAF lab user (or any user) with setting up and running a single point simulation at RCEW with meterological data from one of the AmeriFlux towers on the site. In this document, I am assuming that you have a small or large allocation on the National Center for Atmospheric Research’s (NCAR) supercomputer Cheyenne. At this time CLM is not ported on the high performance computers (HPC), R2 and Borah, at Boise State, but this is a goal to complete soon.</p>
 <p>For this note, users should have access to the Cheyenne (or next gen HPC) supercomputer and a conversational knowledge of a shell type language (bash, sh, csh, tsh, etc.)</p>
+<p>The genreal outline of this technical note will be as followes:</p>
+<ul>
+<li>First, setting up the file structure on Cheyenne and cloning CTSM</li>
+<li>Second, running Point CLM (PTCLM) make tools to generate the single point surfacedata files needed for running simulations at the tower site of choice.</li>
+<li>Third, running an accelerated spin up for thw tower site.</li>
+<li>Finally, running simulations at your tower site!</li>
+</ul>
 </div>
 </div>
 <div id="file-structure-and-cloning-ctsm" class="section level2">
@@ -439,6 +446,8 @@ ls
 <div id="set-up-for-point-simulations-ptclm" class="section level2">
 <h2>3. Set Up for Point Simulations (PTCLM)</h2>
 <p>The <strong>P</strong>oin<strong>T</strong> <strong>CLM</strong> runs through the steps for creating single point domain and surface data files (link to html for single point and region surface data file generation). PTCLM is a simpler way to create these files specifically for Ameriflux tower sites. The file PTCLMmkdata runs the tools to get datasets set up, and copies them to a location you can use, including the changes needed for a case to use the dataset with namelist and XML changes. There are a few steps you will need to take before you can run the PTCLMmkdata script.</p>
+<div id="site-specific-data" class="section level3">
+<h3>3.1 Site Specific Data</h3>
 <p><strong>First</strong>, you will need to add tower site specific data to your location of interest. For more information see the CLM5.0 User’s Guide <a href="https://escomp.github.io/ctsm-docs/versions/release-clm5.0/html/users_guide/running-PTCLM/adding-ptclm-site-data.html">Adding PTCLM site data</a>. First, go to</p>
 <pre class="bash"><code># First, set up your &quot;root&quot; environment
 CTSMROOT=/glade/work/katiem/git/ctsm_rcew
@@ -461,8 +470,27 @@ cd $CTSMROOT/tools/PTCLM/PTCLM_sitedata</code></pre>
 </ul>
 <p>For RCEW we will be using the Reynolds Mountain East tower site, so the following information can be added to the <strong>PTCLMDATA_sitedata.txt</strong> using your text editor of choice.</p>
 <p>US-Rwe,“RCEW Reynolds Mountain East”,ID,-116.7591023,43.0653469,2098,2003,2007,2003,30,AmeriFlux</p>
-<div id="modules" class="section level3">
-<h3>3.1 Modules</h3>
+<p>The <strong>PTCLMDATA_soildata.txt</strong> contains the following (comma separated) headers: site_code,soil_depth,n_layers,layer_depth,layer_sand%,layer_clay%</p>
+<ul>
+<li><em>site_cade</em>: abbreviation for the tower site</li>
+<li><em>soil_depth</em>: not currently in use, enter -999 as the value</li>
+<li><em>n_layers</em>: only 1 soil layer is given, enter 1 as the value</li>
+<li><em>layer_depth</em>: not currently in use, enter -999 as the value</li>
+<li><em>layer_sand%</em>: percent sand, used to set the soil texture</li>
+<li><em>layer_clay%</em>: percent clay, used to set the soil texture</li>
+</ul>
+<p>Within the Pedotransferfunctions….link to modules and explanation of how certain hydraulic properties are calculated…</p>
+<p>The <strong>PTCLMDATA_pftdata.txt</strong> contains the following (comma separated) headers: site_code,pft_f1,pft_c1,pft_f2,pft_c2,pft_f3,pft_c3,pft_f4,pft_c4,pft_f5,pft_c5</p>
+<ul>
+<li><em>site_cade</em>: abbreviation for the tower site</li>
+<li><em>pft_c1-5</em>: the index number of a plant functional type, currently PTCLM only supports up to 5 pfts at a site.</li>
+<li><em>pft_f1-5</em>: the fraction (as a percent) of the site covered by the pft</li>
+</ul>
+<p>The list of pft indexes can be found here <link>:</p>
+<p>Make a table of pfts with the acronym and index #</p>
+</div>
+<div id="loading-modules" class="section level3">
+<h3>3.2 Loading Modules</h3>
 <p>Modules are … You will need to load the appropriate modules in a specific order. order. <strong>NOTE</strong> Depending on if you use miniconda you may or may mot need to load all of the modules if they are already in the miniconda environment. For example, here I do not <em>module load python/2</em> because I will activate a python 2 miniconda environment later.</p>
 <pre class="bash"><code>module load ncarenv/1.3 #set up default NCAR environments (needed to go into a qinteractive session)
 
@@ -481,6 +509,9 @@ module load mpt/2.22 #The HPE Message Passing Interface (MPI). *Needs a compiler
 module load esmf_libs/7.1.0r (H) #Makes Earth Systems Model Framework (ESMF) libraries available. Needs a compiler loaded first (intel/17.0.1 or 18.0.5).
 
 module load ncview/2.1.7 #Loads ncview, which is a quick way to visualize outputs. Type ncview file_name.nc to open a graphical user interface (GUI) for data visualization. </code></pre>
+</div>
+<div id="running-ptclmmkdata" class="section level3">
+<h3>3.3 Running PTCLMmkdata</h3>
 <p>Change directory to the PTCLM folder. From there execute the buildtools script. Buildtools will…</p>
 <pre class="bash"><code>CTSMROOT=/glade/work/katiem/git/ctsm_rcew
 cd $CTSMROOT/tools/PTCLM

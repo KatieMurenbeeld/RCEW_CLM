@@ -110,6 +110,28 @@ For RCEW we will be using the Reynolds Mountain East tower site, so the followin
 
 US-Rwe,"RCEW Reynolds Mountain East",ID,-116.7591023,43.0653469,2098,2003,2007,2003,30,AmeriFlux
 
+The **PTCLMDATA_soildata.txt** contains the following (comma separated) headers: site_code,soil_depth,n_layers,layer_depth,layer_sand%,layer_clay%
+
+* *site_cade*: abbreviation for the tower site
+* *soil_depth*: not currently in use, enter -999 as the value
+* *n_layers*: only 1 soil layer is given, enter 1 as the value
+* *layer_depth*: not currently in use, enter -999 as the value
+* *layer_sand%*: percent sand, used to set the soil texture
+* *layer_clay%*: percent clay, used to set the soil texture
+
+Within the Pedotransferfunctions....link to modules and explanation of how certain hydraulic properties are calculated...
+
+The **PTCLMDATA_pftdata.txt** contains the following (comma separated) headers:
+site_code,pft_f1,pft_c1,pft_f2,pft_c2,pft_f3,pft_c3,pft_f4,pft_c4,pft_f5,pft_c5
+
+* *site_cade*: abbreviation for the tower site
+* *pft_c1-5*: the index number of a plant functional type, currently PTCLM only supports up to 5 pfts at a site.
+* *pft_f1-5*: the fraction (as a percent) of the site covered by the pft
+
+The list of pft indexes can be found here <link>:
+
+Make a table of pfts with the acronym and index #
+
 ### 3.1 Modules
 Modules are ... You will need to load the appropriate modules in a specific order. order. **NOTE** Depending on if you use miniconda you may or may mot need to load all of the modules if they are already in the miniconda environment. For example, here I do not *module load python/2* because I will activate a python 2 miniconda environment later.
 

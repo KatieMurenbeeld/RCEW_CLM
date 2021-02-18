@@ -28,7 +28,7 @@ About the Community Earth Systems Model (CESM), Community Terrestrial Systems Mo
 
 The purpose of this technical note is to familiarize a LEAF lab user (or any user) with setting up and running a single point simulation at RCEW with meterological data from one of the AmeriFlux towers on the site. In this document, I am assuming that you have a small or large allocation on the National Center for Atmospheric Research's (NCAR) supercomputer Cheyenne. At this time CLM is not ported on the high performance computers (HPC), R2 and Borah, at Boise State, but this is a goal to complete soon. 
 
-For this note, users should have access to the Cheyenne (or next gen HPC) supercomputer and a conversational knowledge of a shell type language (bash, sh, csh, tsh, etc.)
+For this note, users should have access to the Cheyenne (or next gen HPC) supercomputer, an active project code, and a conversational knowledge of a shell type language (bash, sh, csh, tsh, etc.)
 
 The genreal outline of this technical note will be as followes:
 
@@ -145,7 +145,7 @@ Make a table of pfts with the acronym and index #
 Modules are ... You will need to load the appropriate modules in a specific order. order. **NOTE** Depending on if you use miniconda you may or may mot need to load all of the modules if they are already in the miniconda environment. For example, here I do not *module load python/2* because I will activate a python 2 miniconda environment later.
 
 ```{bash ptcml_modload, echo=TRUE, eval=FALSE}
-module load ncarenv/1.3 #set up default NCAR environments (needed to go into a qinteractive session)
+module load ncarenv/1.3 #set up default NCAR environments (needed for capability to enter a qinteractive session)
 
 module load intel/17.0.1 #both load intel compilers: C (icc), C++ (icpc), and Fortran (ifort)
 
@@ -172,6 +172,9 @@ Change directory to the PTCLM folder. From there execute the buildtools script. 
 CTSMROOT=/glade/work/katiem/git/ctsm_rcew
 cd $CTSMROOT/tools/PTCLM
 ./buildtools
+
+## Should see this text.
+## Successfully built CLM tools needed to create datasets for PTCLM
 ```
 
 There is a known issue within the PTCLMmkdata code which will need to be addressed before you can continue on with the process. Use the text editor of your choice to open PTCLMmkdata. In line 552 you will need to remove the "export" command.
@@ -184,7 +187,7 @@ There is a known issue within the PTCLMmkdata code which will need to be address
 Once all of the modules are loaded, the tools are built, and the PTCLMmkdata script is updated, open up a qinteractive session in order to complete the map generation and file creation process. The process can take several hours, so I suggest setting the walltime to 6 hours.
 
 ```{bash ptcml_qint, echo=TRUE, eval=FALSE}
-qinteractive -X -l walltime=06:00:00
+qinteractive -X -A UBOI0006 -l walltime=06:00:00
 ```
 
 Load a python 2 compatible miniconda environment (optional).

@@ -402,7 +402,7 @@ summary {
 <div id="purpose-and-technical-assumptions" class="section level3">
 <h3>1.2 Purpose and Technical Assumptions</h3>
 <p>The purpose of this technical note is to familiarize a LEAF lab user (or any user) with setting up and running a single point simulation at RCEW with meterological data from one of the AmeriFlux towers on the site. In this document, I am assuming that you have a small or large allocation on the National Center for Atmospheric Research’s (NCAR) supercomputer Cheyenne. At this time CLM is not ported on the high performance computers (HPC), R2 and Borah, at Boise State, but this is a goal to complete soon.</p>
-<p>For this note, users should have access to the Cheyenne (or next gen HPC) supercomputer and a conversational knowledge of a shell type language (bash, sh, csh, tsh, etc.)</p>
+<p>For this note, users should have access to the Cheyenne (or next gen HPC) supercomputer, an active project code, and a conversational knowledge of a shell type language (bash, sh, csh, tsh, etc.)</p>
 <p>The genreal outline of this technical note will be as followes:</p>
 <ul>
 <li>First, setting up the file structure on Cheyenne and cloning CTSM</li>
@@ -492,7 +492,7 @@ cd $CTSMROOT/tools/PTCLM/PTCLM_sitedata</code></pre>
 <div id="loading-modules" class="section level3">
 <h3>3.2 Loading Modules</h3>
 <p>Modules are … You will need to load the appropriate modules in a specific order. order. <strong>NOTE</strong> Depending on if you use miniconda you may or may mot need to load all of the modules if they are already in the miniconda environment. For example, here I do not <em>module load python/2</em> because I will activate a python 2 miniconda environment later.</p>
-<pre class="bash"><code>module load ncarenv/1.3 #set up default NCAR environments (needed to go into a qinteractive session)
+<pre class="bash"><code>module load ncarenv/1.3 #set up default NCAR environments (needed for capability to enter a qinteractive session)
 
 module load intel/17.0.1 #both load intel compilers: C (icc), C++ (icpc), and Fortran (ifort)
 
@@ -515,12 +515,15 @@ module load ncview/2.1.7 #Loads ncview, which is a quick way to visualize output
 <p>Change directory to the PTCLM folder. From there execute the buildtools script. Buildtools will…</p>
 <pre class="bash"><code>CTSMROOT=/glade/work/katiem/git/ctsm_rcew
 cd $CTSMROOT/tools/PTCLM
-./buildtools</code></pre>
+./buildtools
+
+## Should see this text.
+## Successfully built CLM tools needed to create datasets for PTCLM</code></pre>
 <p>There is a known issue within the PTCLMmkdata code which will need to be addressed before you can continue on with the process. Use the text editor of your choice to open PTCLMmkdata. In line 552 you will need to remove the “export” command.</p>
 <pre class="bash"><code>- cmd = &quot;export REGRID_PROC=1; &quot;+mkmapdat_dir+&quot;/mkmapdata.sh --gridfile &quot;+scripgridfile+&quot; --res &quot;+clmres+&quot; --gridtype regional -v &gt; &quot;+mapdir+&quot;/mkmapdata.log&quot;;
 + cmd = mkmapdat_dir+&quot;/mkmapdata.sh --gridfile &quot;+scripgridfile+&quot; --res &quot;+clmres+&quot; --gridtype regional -v &gt; &quot;+mapdir+&quot;/mkmapdata.log&quot;;</code></pre>
 <p>Once all of the modules are loaded, the tools are built, and the PTCLMmkdata script is updated, open up a qinteractive session in order to complete the map generation and file creation process. The process can take several hours, so I suggest setting the walltime to 6 hours.</p>
-<pre class="bash"><code>qinteractive -X -l walltime=06:00:00</code></pre>
+<pre class="bash"><code>qinteractive -X -A UBOI0006 -l walltime=06:00:00</code></pre>
 <p>Load a python 2 compatible miniconda environment (optional).</p>
 <pre class="bash"><code>conda activate python2</code></pre>
 <p>After entering the qinteractive environment, you will need to reset environmental variables.</p>

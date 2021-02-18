@@ -461,16 +461,26 @@ cd $CTSMROOT/tools/PTCLM/PTCLM_sitedata</code></pre>
 </ul>
 <p>For RCEW we will be using the Reynolds Mountain East tower site, so the following information can be added to the <strong>PTCLMDATA_sitedata.txt</strong> using your text editor of choice.</p>
 <p>US-Rwe,“RCEW Reynolds Mountain East”,ID,-116.7591023,43.0653469,2098,2003,2007,2003,30,AmeriFlux</p>
-<p>Once again load the appropriate modules in the correct order (same as below). <strong>NOTE</strong> Depending on if you use miniconda you may or may mot need to load all of the modules if they are already in the miniconda environment. For example, here I do not <em>module load python/2</em> because I will activate a python 2 miniconda environment later.</p>
-<pre class="bash"><code>module load ncarenv/1.3
-module load intel/17.0.1
-module load ncarcompilers/0.5.0
-module load nco/4.7.9
-module load netcdf/4.7.3
-module load ncl/6.6.2 (H)
-module load mpt/2.22
-module load esmf_libs/7.1.0r (H)
-module load ncview/2.1.7</code></pre>
+<div id="modules" class="section level3">
+<h3>3.1 Modules</h3>
+<p>Modules are … You will need to load the appropriate modules in a specific order. order. <strong>NOTE</strong> Depending on if you use miniconda you may or may mot need to load all of the modules if they are already in the miniconda environment. For example, here I do not <em>module load python/2</em> because I will activate a python 2 miniconda environment later.</p>
+<pre class="bash"><code>module load ncarenv/1.3 #set up default NCAR environments (needed to go into a qinteractive session)
+
+module load intel/17.0.1 #both load intel compilers: C (icc), C++ (icpc), and Fortran (ifort)
+
+module load ncarcompilers/0.5.0 #loads NCAR compiler wrappers, wraps usual serial and parallel compilers to include all the required libraries and header files. *Needs a compiler loaded first (intel/17.0.1 or 18.0.5)
+
+module load nco/4.7.9 #NCO toolkit manipulates and analyzes data stored in netCDF-accessible formats (DAP, HDF4, and HDF5). Uses ncarenv/1.3, gnu/8.3.0, ncarcompilers/0.5.0
+
+module load netcdf/4.7.3 #software libraries and dataformats for NetCDF. *Needs a compiler loaded first (intel/17.0.1 or 18.0.5)
+
+module load ncl/6.6.2 (H) #loads NCAR Command Language (ncl) package.*Needs a compiler loaded first (intel/17.0.1 or 18.0.5)
+
+module load mpt/2.22 #The HPE Message Passing Interface (MPI). *Needs a compiler loaded first (intel/17.0.1 18.0.5)
+
+module load esmf_libs/7.1.0r (H) #Makes Earth Systems Model Framework (ESMF) libraries available. Needs a compiler loaded first (intel/17.0.1 or 18.0.5).
+
+module load ncview/2.1.7 #Loads ncview, which is a quick way to visualize outputs. Type ncview file_name.nc to open a graphical user interface (GUI) for data visualization. </code></pre>
 <p>Change directory to the PTCLM folder. From there execute the buildtools script. Buildtools will…</p>
 <pre class="bash"><code>CTSMROOT=/glade/work/katiem/git/ctsm_rcew
 cd $CTSMROOT/tools/PTCLM
@@ -493,6 +503,7 @@ SITE=US-Rwe</code></pre>
 <p>What is this command doing? …</p>
 <p>Again, this process can take a long time. You may need to run this command multiple times. However, once the mapping files are created they will be skipped over if you have to rerun the PTCLMmkdata command.</p>
 <p><strong>NOTE</strong> Make sure to add in where to find the newly created files.</p>
+</div>
 </div>
 <div id="accelerated-spin-up" class="section level2">
 <h2>4. Accelerated Spin Up</h2>

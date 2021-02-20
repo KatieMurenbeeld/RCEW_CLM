@@ -103,17 +103,17 @@ There you will find three different text files. One for site data (PTCLMDATA_sit
 
 The **PTCLMDATA_sitedata.txt** contains the following (comma separated) headers: site_code,name,state,lon,lat,elev,startyear,endyear,alignyear,timestep,campaign
 
-* *site_code*: abbreviation for the tower site
-* *name*: long name for the tower site, make sure to use ""
-* *state*: state where tower site is located, use abbrevation
-* *lon*: longitude location of the tower site (decimal degrees)
-* *lat*: latitude of the tower site (decimal degrees)
-* *elev*: elevation of the tower site (meters)
-* *startyear*: year when data collection began
-* *endyear*: year when data collection ended
-* *alingyear*: currently unused, use *startyear* as a filler
-* *timestep*: timestep that data is collected (minutes)
-* *campaign*: funding for the site, for example AmeriFlux, Fluxnet-Canada, etc.
+* **site_code**: abbreviation for the tower site
+* **name**: long name for the tower site, make sure to use ""
+* **state**: state where tower site is located, use abbrevation
+* **lon**: longitude location of the tower site (decimal degrees)
+* **lat**: latitude of the tower site (decimal degrees)
+* **elev**: elevation of the tower site (meters)
+* **startyear**: year when data collection began
+* **endyear**: year when data collection ended
+* **alingyear**: currently unused, use *startyear* as a filler
+* **timestep**: timestep that data is collected (minutes)
+* **campaign**: funding for the site, for example AmeriFlux, Fluxnet-Canada, etc.
 
 For RCEW we will be using the Reynolds Mountain East tower site, so the following information can be added to the **PTCLMDATA_sitedata.txt** using your text editor of choice.
 
@@ -121,21 +121,21 @@ US-Rwe,"RCEW Reynolds Mountain East",ID,-116.7591023,43.0653469,2098,2003,2007,2
 
 The **PTCLMDATA_soildata.txt** contains the following (comma separated) headers: site_code,soil_depth,n_layers,layer_depth,layer_sand%,layer_clay%
 
-* *site_cade*: abbreviation for the tower site
-* *soil_depth*: not currently in use, enter -999 as the value
-* *n_layers*: only 1 soil layer is given, enter 1 as the value
-* *layer_depth*: not currently in use, enter -999 as the value
-* *layer_sand%*: percent sand, used to set the soil texture
-* *layer_clay%*: percent clay, used to set the soil texture
+* **site_cade**: abbreviation for the tower site
+* **soil_depth**: not currently in use, enter -999 as the value
+* **n_layers**: only 1 soil layer is given, enter 1 as the value
+* **layer_depth**: not currently in use, enter -999 as the value
+* **layer_sand%**: percent sand, used to set the soil texture
+* **layer_clay%**: percent clay, used to set the soil texture
 
 Within the Pedotransferfunctions....link to modules and explanation of how certain hydraulic properties are calculated...
 
 The **PTCLMDATA_pftdata.txt** contains the following (comma separated) headers:
 site_code,pft_f1,pft_c1,pft_f2,pft_c2,pft_f3,pft_c3,pft_f4,pft_c4,pft_f5,pft_c5
 
-* *site_cade*: abbreviation for the tower site
-* *pft_c1-5*: the index number of a plant functional type, currently PTCLM only supports up to 5 pfts at a site.
-* *pft_f1-5*: the fraction (as a percent) of the site covered by the pft
+* **site_cade**: abbreviation for the tower site
+* **pft_c1-5**: the index number of a plant functional type, currently PTCLM only supports up to 5 pfts at a site.
+* **pft_f1-5**: the fraction (as a percent) of the site covered by the pft
 
 The list of pft indexes can be found here <link>:
 
@@ -144,24 +144,30 @@ Make a table of pfts with the acronym and index #
 ### 3.2 Loading Modules
 Modules are ... You will need to load the appropriate modules in a specific order. order. **NOTE** Depending on if you use miniconda you may or may mot need to load all of the modules if they are already in the miniconda environment. For example, here I do not *module load python/2* because I will activate a python 2 miniconda environment later.
 
+Modules: 
+
+* **ncarenv**: set up default NCAR environments (needed for capability to enter a qinteractive session)
+* **intel**: both load intel compilers: C (icc), C++ (icpc), and Fortran (ifort)
+* **ncarcompilers**: loads NCAR compiler wrappers, wraps usual serial and parallel compilers to include all the required libraries and header files. *Needs a compiler loaded first (intel/17.0.1 or 18.0.5)
+* **nco**: NCO toolkit manipulates and analyzes data stored in netCDF-accessible formats (DAP, HDF4, and HDF5). Uses ncarenv/1.3, gnu/8.3.0, ncarcompilers/0.5.0
+* **netcdf**: software libraries and dataformats for NetCDF. *Needs a compiler loaded first (intel/17.0.1 or 18.0.5)
+* **ncl**: loads NCAR Command Language (ncl) package.*Needs a compiler loaded first (intel/17.0.1 or 18.0.5)
+* **mpt**: The HPE Message Passing Interface (MPI). *Needs a compiler loaded first (intel/17.0.1 18.0.5)
+* **esmf_libs**: Makes Earth Systems Model Framework (ESMF) libraries available. Needs a compiler loaded first (intel/17.0.1 or 18.0.5)
+* **ncview**: Loads ncview, which is a quick way to visualize outputs. Type ncview file_name.nc to open a graphical user interface (GUI) for data visualization. 
+* **python**: optional, version 2 seems to work the best in this case
+
 ```{bash ptcml_modload, echo=TRUE, eval=FALSE}
-module load ncarenv/1.3 #set up default NCAR environments (needed for capability to enter a qinteractive session)
-
-module load intel/17.0.1 #both load intel compilers: C (icc), C++ (icpc), and Fortran (ifort)
-
-module load ncarcompilers/0.5.0 #loads NCAR compiler wrappers, wraps usual serial and parallel compilers to include all the required libraries and header files. *Needs a compiler loaded first (intel/17.0.1 or 18.0.5)
-
-module load nco/4.7.9 #NCO toolkit manipulates and analyzes data stored in netCDF-accessible formats (DAP, HDF4, and HDF5). Uses ncarenv/1.3, gnu/8.3.0, ncarcompilers/0.5.0
-
-module load netcdf/4.7.3 #software libraries and dataformats for NetCDF. *Needs a compiler loaded first (intel/17.0.1 or 18.0.5)
-
-module load ncl/6.6.2 (H) #loads NCAR Command Language (ncl) package.*Needs a compiler loaded first (intel/17.0.1 or 18.0.5)
-
-module load mpt/2.22 #The HPE Message Passing Interface (MPI). *Needs a compiler loaded first (intel/17.0.1 18.0.5)
-
-module load esmf_libs/7.1.0r (H) #Makes Earth Systems Model Framework (ESMF) libraries available. Needs a compiler loaded first (intel/17.0.1 or 18.0.5).
-
-module load ncview/2.1.7 #Loads ncview, which is a quick way to visualize outputs. Type ncview file_name.nc to open a graphical user interface (GUI) for data visualization. 
+module load ncarenv/1.3 
+module load intel/17.0.1 
+module load ncarcompilers/0.5.0 
+module load nco/4.7.9 
+module load netcdf/4.7.3 
+module load ncl/6.6.2 
+module load mpt/2.22 
+module load esmf_libs/7.1.0r 
+module load ncview/2.1.7 
+# module load python/2.*, optional
 ```
 
 ### 3.3 Running PTCLMmkdata

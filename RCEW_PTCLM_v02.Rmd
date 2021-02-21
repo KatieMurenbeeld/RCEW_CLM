@@ -16,7 +16,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 The purpose of this technical note is to familiarize a LEAF lab user (or any user) with setting up and running a single point climate simulation at the Reynold's Creek Experimental Watershed (RCEW) using the Community Terrestrial Systems Model (CTSM) with standard climate forcing data or meterological data from one of the AmeriFlux towers on the site. 
 
-In this document, I am assuming that you have a small or large allocation on the National Center for Atmospheric Research's (NCAR) supercomputer Cheyenne. At this time CLM is not ported on the high performance computers (HPC), R2 and Borah, at Boise State, but this is a goal to complete soon. For this note, I am also assuming users have an active NCAR project code, a conversational knowledge of a shell type language (bash, sh, csh, tsh, etc.), and a basic understanding of git and github. 
+In this document, I am assuming that you have a small or large allocation on the National Center for Atmospheric Research's (NCAR) supercomputer Cheyenne. At this time CLM is not ported on the high performance computers (HPC), R2 and Borah, at Boise State, but this is a goal to complete soon. For this note, I am also assuming users have an active NCAR project code, a conversational knowledge of a shell type language (bash, sh, csh, tsh, etc.), can use a text editor such as vim or emacs, and a basic understanding of git and github. 
 
 The genreal outline of this technical note will be as followes:
 
@@ -137,7 +137,7 @@ The **PTCLMDATA_sitedata.txt** contains the following (comma separated) headers:
 * **timestep**: timestep that data is collected (minutes)
 * **campaign**: funding for the site, for example AmeriFlux, Fluxnet-Canada, etc.
 
-For RCEW we will be using the Reynolds Mountain East tower site, so the following information can be added to the **PTCLMDATA_sitedata.txt** using your text editor of choice (I use vim). 
+For RCEW we will be using the Reynolds Mountain East tower site ([site description](https://ameriflux.lbl.gov/sites/siteinfo/US-Rwe)), so the following information can be added to the **PTCLMDATA_sitedata.txt** using your text editor of choice (I use vim). In general, the site data for each specific tower can be found from the ameriflux.lbl.gov/sites/siteinfo/your-site website. 
 
 US-Rwe,"RCEW Reynolds Mountain East",ID,-116.7591023,43.0653469,2098,2003,2007,2003,30,AmeriFlux
 
@@ -150,7 +150,16 @@ The **PTCLMDATA_soildata.txt** contains the following (comma separated) headers:
 * **layer_sand%**: percent sand, used to set the soil texture
 * **layer_clay%**: percent clay, used to set the soil texture
 
-Within the Pedotransferfunctions....link to modules and explanation of how certain hydraulic properties are calculated...
+Soil data from Reynold's Mountain East was found at the [Dataset for Soil properties of Reynolds Mountain East a subcatchment of Reynolds Creek, Idaho ](https://doi.org/10.18122/B29T3T). For this instance I averaged the sand and clay contents. Soil data for other sites at RCEW can be found at the  [hydroshare website](https://www.hydroshare.org/group/143). 
+
+Add the following information can be added to the **PTCLMDATA_soildata.txt** using your text editor:
+
+US-Rwe,-999,1,-999,36.32,20.92
+
+Within CLM the soil texture (percent sand and clay) is used to determine the soil's thermal and hydraulic properties (see the CLM tech note chapter 6.3 [Soil and Snow Thermal Properties](https://escomp.github.io/ctsm-docs/versions/release-clm5.0/html/tech_note/Soil_Snow_Temperatures/CLM50_Tech_Note_Soil_Snow_Temperatures.html#soil-and-snow-thermal-properties) and chapter 7 [Hydrology](https://escomp.github.io/ctsm-docs/versions/release-clm5.0/html/tech_note/Hydrology/CLM50_Tech_Note_Hydrology.html#).
+
+*Advanced Note:* Specifically the mineral soil hydraulic properties are calculated using only the Clapp-Hornberg formulation. The specific Fortran code can be found in the  [FuncPedotranserMod.F90](https://github.com/ESCOMP/CTSM/blob/master/src/main/FuncPedotransferMod.F90). The outputs from this FuncPedotranserMod.F90 are called into other submodules of the CTSM/CLM code, specifically the [SoilStateInitTimeConst.F90](https://github.com/ESCOMP/CTSM/blob/master/src/biogeophys/SoilStateInitTimeConstMod.F90). All of this is quite a rabbit-hole to fall down, but if you want a better understanding of the model as a whole, read the above referenced chapters of the CLM tech note and have a look at the Soil*.F90 code on [github](https://github.com/ESCOMP/CTSM/tree/master/src/biogeophys).
+
 
 The **PTCLMDATA_pftdata.txt** contains the following (comma separated) headers:
 site_code,pft_f1,pft_c1,pft_f2,pft_c2,pft_f3,pft_c3,pft_f4,pft_c4,pft_f5,pft_c5
@@ -159,12 +168,20 @@ site_code,pft_f1,pft_c1,pft_f2,pft_c2,pft_f3,pft_c3,pft_f4,pft_c4,pft_f5,pft_c5
 * **pft_c1-5**: the index number of a plant functional type, currently PTCLM only supports up to 5 pfts at a site.
 * **pft_f1-5**: the fraction (as a percent) of the site covered by the pft
 
-The list of pft indexes can be found here <link>:
+Add the following information can be added to the **PTCLMDATA_pftdata.txt** using your text editor:
+
+US-Rwe,100,9,0,0,0,0,0,0,0,0
+
+Plant data was inferred from the Ameriflux site description [here](https://ameriflux.lbl.gov/sites/siteinfo/US-Rwe). 
+
+The list of pft indexes can be found [here](link):
 
 Make a table of pfts with the acronym and index #
 
 ### 3.2 Loading Modules
-Modules are ... You will need to load the appropriate modules in a specific order. order. **NOTE** Depending on if you use miniconda you may or may mot need to load all of the modules if they are already in the miniconda environment. For example, here I do not *module load python/2* because I will activate a python 2 miniconda environment later.
+Modules are software environments for use on Cheyenne. Information on Cheyenne specific modules and software can be found [here](https://www2.cisl.ucar.edu/resources/computational-systems/cheyenne/software) and useful module commands [here](https://www2.cisl.ucar.edu/resources/computational-systems/cheyenne/user-environment/environment-modules#essential_cmds).
+
+You will need to load the appropriate modules in a specific order. **NOTE** Depending on if you use miniconda you may or may mot need to load all of the modules if they are already in the miniconda environment. For example, here I do not *module load python/2* because I will activate a python 2 miniconda environment later.
 
 Modules: 
 

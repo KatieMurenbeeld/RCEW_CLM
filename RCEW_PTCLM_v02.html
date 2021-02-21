@@ -394,7 +394,7 @@ summary {
 <div id="introduction" class="section level2">
 <h2>1. Introduction</h2>
 <p>The purpose of this technical note is to familiarize a LEAF lab user (or any user) with setting up and running a single point climate simulation at the Reynold’s Creek Experimental Watershed (RCEW) using the Community Terrestrial Systems Model (CTSM) with standard climate forcing data or meterological data from one of the AmeriFlux towers on the site.</p>
-<p>In this document, I am assuming that you have a small or large allocation on the National Center for Atmospheric Research’s (NCAR) supercomputer Cheyenne. At this time CLM is not ported on the high performance computers (HPC), R2 and Borah, at Boise State, but this is a goal to complete soon. For this note, I am also assuming users have an active NCAR project code, a conversational knowledge of a shell type language (bash, sh, csh, tsh, etc.), and a basic understanding of git and github.</p>
+<p>In this document, I am assuming that you have a small or large allocation on the National Center for Atmospheric Research’s (NCAR) supercomputer Cheyenne. At this time CLM is not ported on the high performance computers (HPC), R2 and Borah, at Boise State, but this is a goal to complete soon. For this note, I am also assuming users have an active NCAR project code, a conversational knowledge of a shell type language (bash, sh, csh, tsh, etc.), can use a text editor such as vim or emacs, and a basic understanding of git and github.</p>
 <p>The genreal outline of this technical note will be as followes:</p>
 <ul>
 <li>First, a little background on Reynold’s Creek and CESM.</li>
@@ -488,7 +488,7 @@ cd $CTSMROOT/tools/PTCLM/PTCLM_sitedata</code></pre>
 <li><strong>timestep</strong>: timestep that data is collected (minutes)</li>
 <li><strong>campaign</strong>: funding for the site, for example AmeriFlux, Fluxnet-Canada, etc.</li>
 </ul>
-<p>For RCEW we will be using the Reynolds Mountain East tower site, so the following information can be added to the <strong>PTCLMDATA_sitedata.txt</strong> using your text editor of choice (I use vim).</p>
+<p>For RCEW we will be using the Reynolds Mountain East tower site (<a href="https://ameriflux.lbl.gov/sites/siteinfo/US-Rwe">site description</a>), so the following information can be added to the <strong>PTCLMDATA_sitedata.txt</strong> using your text editor of choice (I use vim). In general, the site data for each specific tower can be found from the ameriflux.lbl.gov/sites/siteinfo/your-site website.</p>
 <p>US-Rwe,“RCEW Reynolds Mountain East”,ID,-116.7591023,43.0653469,2098,2003,2007,2003,30,AmeriFlux</p>
 <p>The <strong>PTCLMDATA_soildata.txt</strong> contains the following (comma separated) headers: site_code,soil_depth,n_layers,layer_depth,layer_sand%,layer_clay%</p>
 <ul>
@@ -499,19 +499,27 @@ cd $CTSMROOT/tools/PTCLM/PTCLM_sitedata</code></pre>
 <li><strong>layer_sand%</strong>: percent sand, used to set the soil texture</li>
 <li><strong>layer_clay%</strong>: percent clay, used to set the soil texture</li>
 </ul>
-<p>Within the Pedotransferfunctions….link to modules and explanation of how certain hydraulic properties are calculated…</p>
+<p>Soil data from Reynold’s Mountain East was found at the <a href="https://doi.org/10.18122/B29T3T">Dataset for Soil properties of Reynolds Mountain East a subcatchment of Reynolds Creek, Idaho</a>. For this instance I averaged the sand and clay contents. Soil data for other sites at RCEW can be found at the <a href="https://www.hydroshare.org/group/143">hydroshare website</a>.</p>
+<p>Add the following information can be added to the <strong>PTCLMDATA_soildata.txt</strong> using your text editor:</p>
+<p>US-Rwe,-999,1,-999,36.32,20.92</p>
+<p>Within CLM the soil texture (percent sand and clay) is used to determine the soil’s thermal and hydraulic properties (see the CLM tech note chapter 6.3 <a href="https://escomp.github.io/ctsm-docs/versions/release-clm5.0/html/tech_note/Soil_Snow_Temperatures/CLM50_Tech_Note_Soil_Snow_Temperatures.html#soil-and-snow-thermal-properties">Soil and Snow Thermal Properties</a> and chapter 7 <a href="https://escomp.github.io/ctsm-docs/versions/release-clm5.0/html/tech_note/Hydrology/CLM50_Tech_Note_Hydrology.html#">Hydrology</a>.</p>
+<p><em>Advanced Note:</em> Specifically the mineral soil hydraulic properties are calculated using only the Clapp-Hornberg formulation. The specific Fortran code can be found in the <a href="https://github.com/ESCOMP/CTSM/blob/master/src/main/FuncPedotransferMod.F90">FuncPedotranserMod.F90</a>. The outputs from this FuncPedotranserMod.F90 are called into other submodules of the CTSM/CLM code, specifically the <a href="https://github.com/ESCOMP/CTSM/blob/master/src/biogeophys/SoilStateInitTimeConstMod.F90">SoilStateInitTimeConst.F90</a>. All of this is quite a rabbit-hole to fall down, but if you want a better understanding of the model as a whole, read the above referenced chapters of the CLM tech note and have a look at the Soil*.F90 code on <a href="https://github.com/ESCOMP/CTSM/tree/master/src/biogeophys">github</a>.</p>
 <p>The <strong>PTCLMDATA_pftdata.txt</strong> contains the following (comma separated) headers: site_code,pft_f1,pft_c1,pft_f2,pft_c2,pft_f3,pft_c3,pft_f4,pft_c4,pft_f5,pft_c5</p>
 <ul>
 <li><strong>site_cade</strong>: abbreviation for the tower site</li>
 <li><strong>pft_c1-5</strong>: the index number of a plant functional type, currently PTCLM only supports up to 5 pfts at a site.</li>
 <li><strong>pft_f1-5</strong>: the fraction (as a percent) of the site covered by the pft</li>
 </ul>
-<p>The list of pft indexes can be found here <link>:</p>
+<p>Add the following information can be added to the <strong>PTCLMDATA_pftdata.txt</strong> using your text editor:</p>
+<p>US-Rwe,100,9,0,0,0,0,0,0,0,0</p>
+<p>Plant data was inferred from the Ameriflux site description <a href="https://ameriflux.lbl.gov/sites/siteinfo/US-Rwe">here</a>.</p>
+<p>The list of pft indexes can be found <a href="link">here</a>:</p>
 <p>Make a table of pfts with the acronym and index #</p>
 </div>
 <div id="loading-modules" class="section level3">
 <h3>3.2 Loading Modules</h3>
-<p>Modules are … You will need to load the appropriate modules in a specific order. order. <strong>NOTE</strong> Depending on if you use miniconda you may or may mot need to load all of the modules if they are already in the miniconda environment. For example, here I do not <em>module load python/2</em> because I will activate a python 2 miniconda environment later.</p>
+<p>Modules are software environments for use on Cheyenne. Information on Cheyenne specific modules and software can be found <a href="https://www2.cisl.ucar.edu/resources/computational-systems/cheyenne/software">here</a> and useful module commands <a href="https://www2.cisl.ucar.edu/resources/computational-systems/cheyenne/user-environment/environment-modules#essential_cmds">here</a>.</p>
+<p>You will need to load the appropriate modules in a specific order. <strong>NOTE</strong> Depending on if you use miniconda you may or may mot need to load all of the modules if they are already in the miniconda environment. For example, here I do not <em>module load python/2</em> because I will activate a python 2 miniconda environment later.</p>
 <p>Modules:</p>
 <ul>
 <li><strong>ncarenv</strong>: set up default NCAR environments (needed for capability to enter a qinteractive session)</li>

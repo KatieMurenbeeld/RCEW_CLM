@@ -393,8 +393,8 @@ summary {
 
 <div id="introduction" class="section level2">
 <h2>1. Introduction</h2>
-<p>The purpose of this technical note is to familiarize a LEAF lab user (or any user) with setting up and running a single point simulation at RCEW with meterological data from one of the AmeriFlux towers on the site. In this document, I am assuming that you have a small or large allocation on the National Center for Atmospheric Research’s (NCAR) supercomputer Cheyenne. At this time CLM is not ported on the high performance computers (HPC), R2 and Borah, at Boise State, but this is a goal to complete soon.</p>
-<p>For this note, users should have access to the Cheyenne (or next gen HPC) supercomputer, an active project code, a conversational knowledge of a shell type language (bash, sh, csh, tsh, etc.), and a basic understanding of git and github.</p>
+<p>The purpose of this technical note is to familiarize a LEAF lab user (or any user) with setting up and running a single point climate simulation at the Reynold’s Creek Experimental Watershed (RCEW) using the Community Terrestrial Systems Model (CTSM) with standard climate forcing data or meterological data from one of the AmeriFlux towers on the site.</p>
+<p>In this document, I am assuming that you have a small or large allocation on the National Center for Atmospheric Research’s (NCAR) supercomputer Cheyenne. At this time CLM is not ported on the high performance computers (HPC), R2 and Borah, at Boise State, but this is a goal to complete soon. For this note, I am also assuming users have an active NCAR project code, a conversational knowledge of a shell type language (bash, sh, csh, tsh, etc.), and a basic understanding of git and github.</p>
 <p>The genreal outline of this technical note will be as followes:</p>
 <ul>
 <li>First, a little background on Reynold’s Creek and CESM.</li>
@@ -418,7 +418,8 @@ The Eddy covariance tower at Reynold’s Mountain East
 </div>
 <div id="the-community-earth-systems-model-cesm-and-the-community-terrestrial-systems-model-ctsm" class="section level3">
 <h3>1.2 The Community Earth Systems Model (CESM) and the Community Terrestrial Systems Model (CTSM)</h3>
-<p>About the Community Earth Systems Model (CESM), Community Terrestrial Systems Model (CTSM) and Community Land Model (CLM) explain how different although terms are used almost interchangably. Model simulations.</p>
+<p>The Community Earth Systems Model <a href="https://www.cesm.ucar.edu/">CESM</a> was created at NCAR in 1983 and has been in use with continual updates ever since. CESM is a global atmosphere model developed to understand and predict Earth’s climate. More history about the development of CESM can be found <a href="https://www.cesm.ucar.edu/about/?ref=hp">here</a>.</p>
+<p>The Community Terrestrial Systems Model <a href="https://www.cesm.ucar.edu/models/cesm2/land/">CTSM</a> or <a href="https://www.cesm.ucar.edu/models/clm/">CLM</a> is the land model componentof the CESM. Often, one may see or hear CTSM refered to as CLM (Community Land Model). Technically, CLM is a specific component to the CTSM, but the terms are often used interchangably.</p>
 <p>Instructions for this tech note have been edited and aggregated from the escomp <a href="https://escomp.github.io/ctsm-docs/versions/release-clm5.0/html/users_guide/index.html">CLM5.0 User’s guide</a> specifically section 1.7 and the <a href="https://www.cesm.ucar.edu/models/cesm1.2/clm/models/lnd/clm/doc/UsersGuide/f101.html">CLM4.5 User’s Guide</a>, specifically Chapter 5.</p>
 </div>
 </div>
@@ -433,17 +434,24 @@ cd git                # go to the newly created git folder</code></pre>
 </div>
 <div id="cloning-ctsm" class="section level3">
 <h3>2.2 Cloning CTSM</h3>
-<p>From your newly created git folder, clone the CLM/CTSM code. The following code will point to the latest CTSM release:</p>
+<p>From your newly created git folder, clone the CLM/CTSM code. There may be updates to the cloning and set up process in the future. The <a href="https://github.com/ESCOMP/CTSM">ESCOMP/CTSM</a> github and github <a href="https://github.com/ESCOMP/CTSM/wiki">wiki</a> page are good references to have bookmarked. See the <a href="https://github.com/ESCOMP/CTSM/wiki/CTSM-Quickstart-Guide-for-Users">Quick Start guide</a> for more cloning information.</p>
+<p>The following code will point to the latest CTSM release:</p>
 <pre class="bash"><code># Check out the latest release branch and create a new branch for your project
 
+# Here I am cloning the most recent release to a new branch and directory &quot;ctsm-rcew&quot;
 git clone -b release-clm5.0 https://github.com/ESCOMP/CTSM.git ctsm_rcew 
-cd ctsm_rcew   # A new directory was created for your project
-git branch   # Check to see the branches you have now created. There should be a master (or main) as well as a ctsm_rcew branch. The ctsm_rcew branch should have a star next to it meaning that is the active branch or branch you are working in.
+
+# Go to the newly created directory
+# A new directory should have been created for your project
+cd ctsm_rcew
+
+# Check to see the branches you have now created. There should be a master (or main) as well as a ctsm_rcew branch. The ctsm_rcew branch should have a star next to it meaning that is the active branch or branch you are working in.
+git branch   
 
 # If no new branch, create your own.
 git checkout -b ctsm_rcew
-ls   # Explore the contents of the new directory</code></pre>
-<p>There may be updates to the cloning and set up process in the future. The <a href="https://github.com/ESCOMP/CTSM">ESCOMP/CTSM</a> github and github <a href="https://github.com/ESCOMP/CTSM/wiki">wiki</a> page are good references to have bookmarked. See the <a href="https://github.com/ESCOMP/CTSM/wiki/CTSM-Quickstart-Guide-for-Users">Quick Start guide</a> for more cloning information.</p>
+# Explore the contents of the new directory
+ls   </code></pre>
 <p>Notice that there is a folder within your project direcotry named manage_externals. This contains a very important script, checkout_externals, which downloads all of the components required for building and running CTSM. These include: CLM (land model component), CISM (sea-ice component), RTM (river routing component), MOSART (river routing component), CIME (contains scripts and tools for running CESM), CMEPS (Earth prediction option of CIME), FATES (dynamic vegetation option of CLM), and PTCLM (point simulation option of CLM). More information about checkout_externals can be found in the README_EXTERNALS.rst file in your project folder.</p>
 <p>To checkout the externals:</p>
 <pre class="bash"><code>./manage_externals/checkout_externals</code></pre>

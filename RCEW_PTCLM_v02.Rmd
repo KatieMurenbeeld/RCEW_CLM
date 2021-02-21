@@ -14,28 +14,36 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## 1. Introduction
 
+The purpose of this technical note is to familiarize a LEAF lab user (or any user) with setting up and running a single point simulation at RCEW with meterological data from one of the AmeriFlux towers on the site. In this document, I am assuming that you have a small or large allocation on the National Center for Atmospheric Research's (NCAR) supercomputer Cheyenne. At this time CLM is not ported on the high performance computers (HPC), R2 and Borah, at Boise State, but this is a goal to complete soon. 
+
+For this note, users should have access to the Cheyenne (or next gen HPC) supercomputer, an active project code, a conversational knowledge of a shell type language (bash, sh, csh, tsh, etc.), and a basic understanding of git and github. 
+
+The genreal outline of this technical note will be as followes:
+
+* First, a little background on Reynold's Creek and CESM.
+* Section 2: Setting up the file structure on Cheyenne and cloning CTSM
+* Section 3: Running Point CLM (PTCLM) make tools to generate the single point surfacedata files needed for running simulations at the tower site of choice.
+* Section 4: Running an accelerated spin up for thw tower site.
+* Section 5: Running simulations at your tower site!
+* Section 6 Examining model output.
+* Section 7: A list of useful links at the end to serve a quick reference list. 
+
 ### 1.1 Reynold's Creek Experimental Watershed
 
 Reynold's Creek Experimental Watershed (RCEW)...(a little about the location and CZO).
+
+More information on RCEW as a part of the CZO can be found [here](https://czo-archive.criticalzone.org/reynolds/infrastructure/field-area/reynolds-creek-experimental-watershed/) and information about available data and data downloads can be found [here](https://www.ars.usda.gov/pacific-west-area/boise-id/northwest-watershed-research-center/docs/reynolds-creek-experimental-watershed-data/)
 
 ```{r clm_fig01, echo=FALSE, eval=TRUE}
 knitr::include_graphics("figures/ReyMtn4_900_675_80auto.jpg")
 ```
 
-About the Community Earth Systems Model (CESM), Community Terrestrial Systems Model (CTSM) and Community Land Model (CLM) explain how different although terms are used almost interchangably. Model simulations. Instructions for this tech note have been edited and aggregated from the escomp [CLM5.0 User's guide](https://escomp.github.io/ctsm-docs/versions/release-clm5.0/html/users_guide/index.html) specifically section 1.7 and the [CLM4.5 User's Guide](https://www.cesm.ucar.edu/models/cesm1.2/clm/models/lnd/clm/doc/UsersGuide/f101.html), specifically Chapter 5.  
+### 1.2 The Community Earth Systems Model (CESM) and the Community Terrestrial Systems Model (CTSM)
 
-### 1.2 Purpose and Technical Assumptions
+About the Community Earth Systems Model (CESM), Community Terrestrial Systems Model (CTSM) and Community Land Model (CLM) explain how different although terms are used almost interchangably. Model simulations. 
 
-The purpose of this technical note is to familiarize a LEAF lab user (or any user) with setting up and running a single point simulation at RCEW with meterological data from one of the AmeriFlux towers on the site. In this document, I am assuming that you have a small or large allocation on the National Center for Atmospheric Research's (NCAR) supercomputer Cheyenne. At this time CLM is not ported on the high performance computers (HPC), R2 and Borah, at Boise State, but this is a goal to complete soon. 
+Instructions for this tech note have been edited and aggregated from the escomp [CLM5.0 User's guide](https://escomp.github.io/ctsm-docs/versions/release-clm5.0/html/users_guide/index.html) specifically section 1.7 and the [CLM4.5 User's Guide](https://www.cesm.ucar.edu/models/cesm1.2/clm/models/lnd/clm/doc/UsersGuide/f101.html), specifically Chapter 5.  
 
-For this note, users should have access to the Cheyenne (or next gen HPC) supercomputer, an active project code, and a conversational knowledge of a shell type language (bash, sh, csh, tsh, etc.)
-
-The genreal outline of this technical note will be as followes:
-
-* First, setting up the file structure on Cheyenne and cloning CTSM
-* Second, running Point CLM (PTCLM) make tools to generate the single point surfacedata files needed for running simulations at the tower site of choice.
-* Third, running an accelerated spin up for thw tower site.
-* Finally, running simulations at your tower site!
 
 ## 2. File Structure and Cloning CTSM
 
@@ -65,6 +73,8 @@ git checkout -b ctsm_rcew
 ls   # Explore the contents of the new directory
 ```
 
+There may be updates to the cloning and set up process in the future. The [ESCOMP/CTSM](https://github.com/ESCOMP/CTSM) github and github [wiki](https://github.com/ESCOMP/CTSM/wiki) page are good references to have bookmarked. See the [Quick Start guide](https://github.com/ESCOMP/CTSM/wiki/CTSM-Quickstart-Guide-for-Users) for more cloning information. 
+
 Notice that there is a folder within your project direcotry named manage_externals. This contains a very important script, checkout_externals, which downloads all of the components required for building and running CTSM. These include: CLM (land model component), CISM (sea-ice component), RTM (river routing component), MOSART (river routing component), CIME (contains scripts and tools for running CESM), CMEPS (Earth prediction option of CIME), FATES (dynamic vegetation option of CLM), and PTCLM (point simulation option of CLM). More information about checkout_externals can be found in the README_EXTERNALS.rst file in your project folder. 
 
 To checkout the externals:
@@ -93,7 +103,7 @@ $CTSMROOT/tools/PTCLM/
 
 ### 3.1 Site Specific Data
 
-**First**, you will need to add tower site specific data to your location of interest. For more information see the CLM5.0 User's Guide [Adding PTCLM site data](https://escomp.github.io/ctsm-docs/versions/release-clm5.0/html/users_guide/running-PTCLM/adding-ptclm-site-data.html). First, go to 
+**First**, you will need to add tower site specific data to your location of interest. For more information see the CLM5.0 User's Guide [Adding PTCLM site data](https://escomp.github.io/ctsm-docs/versions/release-clm5.0/html/users_guide/running-PTCLM/adding-ptclm-site-data.html). Go to CTSMROOT/tools/PTCLM/PTCLM_sitedata. 
 
 ```{bash, site_data, echo=TRUE, eval=FALSE}
 # First, set up your "root" environment
@@ -118,7 +128,7 @@ The **PTCLMDATA_sitedata.txt** contains the following (comma separated) headers:
 * **timestep**: timestep that data is collected (minutes)
 * **campaign**: funding for the site, for example AmeriFlux, Fluxnet-Canada, etc.
 
-For RCEW we will be using the Reynolds Mountain East tower site, so the following information can be added to the **PTCLMDATA_sitedata.txt** using your text editor of choice.
+For RCEW we will be using the Reynolds Mountain East tower site, so the following information can be added to the **PTCLMDATA_sitedata.txt** using your text editor of choice (I use vim). 
 
 US-Rwe,"RCEW Reynolds Mountain East",ID,-116.7591023,43.0653469,2098,2003,2007,2003,30,AmeriFlux
 
@@ -405,9 +415,9 @@ ls
 ```
 
 
-## 6. Setting Up and Running a Case
+## 5. Setting Up and Running a Case
 
-## 7. Model Outputs
+## 6. Model Outputs
 
-## 8. Useful References
+## 7. Useful References
 

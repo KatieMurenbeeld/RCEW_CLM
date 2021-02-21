@@ -30,11 +30,11 @@ The genreal outline of this technical note will be as followes:
 
 ### 1.1 Reynold's Creek Experimental Watershed
 
-Reynold's Creek Experimental Watershed (RCEW)...(a little about the location and CZO).
+Reynold's Creek Experimental Watershed (RCEW), located in southwestern Idaho, was established in 1960 to serve as an "outdoor hydrological laboratory". The RCEW is now a part of the Critical Zone Observatory (CZO). Climate and soil data from RCEW is regularly collected, publically avaiable, and is useful for understanding the dynmaincs of the water, energy, and nutrient cycles of the Great Basin as well as the Interior Pacific Northwest. 
 
-More information on RCEW as a part of the CZO can be found [here](https://czo-archive.criticalzone.org/reynolds/infrastructure/field-area/reynolds-creek-experimental-watershed/) and information about available data and data downloads can be found [here](https://www.ars.usda.gov/pacific-west-area/boise-id/northwest-watershed-research-center/docs/reynolds-creek-experimental-watershed-data/)
+More information on RCEW as a part of the CZO can be found [here](https://czo-archive.criticalzone.org/reynolds/infrastructure/field-area/reynolds-creek-experimental-watershed/) and information about available data and data access can be found [here](https://www.ars.usda.gov/pacific-west-area/boise-id/northwest-watershed-research-center/docs/reynolds-creek-experimental-watershed-data/).
 
-```{r clm_fig01, echo=FALSE, eval=TRUE}
+```{r clm_fig01, echo=FALSE, eval=TRUE, fig.cap="The Eddy covariance tower at Reynold's Mountain East"}
 knitr::include_graphics("figures/ReyMtn4_900_675_80auto.jpg")
 ```
 

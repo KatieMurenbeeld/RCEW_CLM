@@ -42,16 +42,16 @@ knitr::include_graphics("figures/ReyMtn4_900_675_80auto.jpg")
 
 The Community Earth Systems Model [CESM](https://www.cesm.ucar.edu/) was created at NCAR in 1983 and has been in use with continual updates ever since. CESM is a global atmosphere model developed to understand and predict Earth's climate. More history about the development of CESM can be found [here](https://www.cesm.ucar.edu/about/?ref=hp).
 
-The Community Terrestrial Systems Model [CTSM](https://www.cesm.ucar.edu/models/cesm2/land/) or [CLM](https://www.cesm.ucar.edu/models/clm/) is the land model componentof the CESM. Often, one may see or hear CTSM refered to as CLM (Community Land Model). Technically, CLM is a specific component to the CTSM, but the terms are often used interchangably. 
+The Community Terrestrial Systems Model [CTSM](https://www.cesm.ucar.edu/models/cesm2/land/) or [CLM](https://www.cesm.ucar.edu/models/clm/) is the land model componentof the CESM. Often, one may see or hear CTSM refered to as CLM (Community Land Model). Technically, CLM is a specific component to the CTSM, but the terms are often used interchangably. CLM is used for examining the biophysical and biogeochemical processes of the Earth's terrestrial systems. CLM contains various submodel options such as the as the river routing or the dynamic vegetation components. I highly recommend the [overview]() as well as some of the powerpoints and [tutorials](https://www.cgd.ucar.edu/events/2019/ctsm/) from the [github page](https://github.com/ESCOMP/CTSM/wiki/Model-Tutorials) for a more in depth overview. Additionally, the techinal documentation for CLM version 5.0 can be found [here](https://escomp.github.io/ctsm-docs/versions/release-clm5.0/html/tech_note/index.html).
 
-Instructions for this tech note have been edited and aggregated from the escomp [CLM5.0 User's guide](https://escomp.github.io/ctsm-docs/versions/release-clm5.0/html/users_guide/index.html) specifically section 1.7 and the [CLM4.5 User's Guide](https://www.cesm.ucar.edu/models/cesm1.2/clm/models/lnd/clm/doc/UsersGuide/f101.html), specifically Chapter 5.  
+Instructions for this tech note have been edited and aggregated from the [CLM5.0 User's guide](https://escomp.github.io/ctsm-docs/versions/release-clm5.0/html/users_guide/index.html) specifically section 1.7 and the [CLM4.5 User's Guide](https://www.cesm.ucar.edu/models/cesm1.2/clm/models/lnd/clm/doc/UsersGuide/f101.html), specifically Chapter 5.  
 
 
 ## 2. File Structure and Cloning CTSM
 
 ### 2.1 File Structure
 
-If you don't have a git working directory set up already on Cheyenne, do so now. It is a best practice to keep projects in their own work directory within this git working directory. 
+If you do not currently have a git working directory set up already on Cheyenne, do so now. It is a best practice to keep projects in their own work directory within this git working directory. 
 
 ```{bash set_dir, echo=TRUE, eval=FALSE}
 cd /glade/work/$USER/ # go to your work directory on Glade

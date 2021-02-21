@@ -384,7 +384,7 @@ summary {
 <li><a href="#introduction">1. Introduction</a></li>
 <li><a href="#file-structure-and-cloning-ctsm">2. File Structure and Cloning CTSM</a></li>
 <li><a href="#set-up-for-point-simulations-ptclm">3. Set Up for Point Simulations (PTCLM)</a></li>
-<li><a href="#accelerated-spin-up">4. Accelerated Spin Up</a></li>
+<li><a href="#preparation-for-simulations">4. Preparation for Simulations</a></li>
 <li><a href="#setting-up-and-running-a-case">5. Setting Up and Running a Case</a></li>
 <li><a href="#model-outputs">6. Model Outputs</a></li>
 <li><a href="#useful-references">7. Useful References</a></li>
@@ -519,7 +519,8 @@ cd $CTSMROOT/tools/PTCLM/PTCLM_sitedata</code></pre>
 <div id="loading-modules" class="section level3">
 <h3>3.2 Loading Modules</h3>
 <p>Modules are software environments for use on Cheyenne. Information on Cheyenne specific modules and software can be found <a href="https://www2.cisl.ucar.edu/resources/computational-systems/cheyenne/software">here</a> and useful module commands <a href="https://www2.cisl.ucar.edu/resources/computational-systems/cheyenne/user-environment/environment-modules#essential_cmds">here</a>.</p>
-<p>You will need to load the appropriate modules in a specific order. <strong>NOTE</strong> Depending on if you use miniconda you may or may mot need to load all of the modules if they are already in the miniconda environment. For example, here I do not <em>module load python/2</em> because I will activate a python 2 miniconda environment later.</p>
+<p>You will need to load the appropriate modules in a specific order because some modules are dependent on others, for example a compiler module often needs to be loaded before some of the NCAR specific software modules.</p>
+<p><strong>NOTE</strong> Depending on if you use miniconda you may or may mot need to load all of the modules if they are already in the miniconda environment. For example, here I do not <em>module load python/2</em> because I will activate a python 2 miniconda environment later.</p>
 <p>Modules:</p>
 <ul>
 <li><strong>ncarenv</strong>: set up default NCAR environments (needed for capability to enter a qinteractive session)</li>
@@ -590,8 +591,10 @@ SITE=US-Rwe</code></pre>
 <p>The folders will have the following naming convention: 1x1_<em>site-name</em>.</p>
 </div>
 </div>
-<div id="accelerated-spin-up" class="section level2">
-<h2>4. Accelerated Spin Up</h2>
+<div id="preparation-for-simulations" class="section level2">
+<h2>4. Preparation for Simulations</h2>
+<div id="accelerated-spin-up" class="section level3">
+<h3>4.1 Accelerated Spin Up</h3>
 <p>Something something, working with soils, getting to a steady state. Need to do a spin up.</p>
 <p>Within this section, also some of the (not so basic) basics for creating and submitting a CLM “case”, or simulation.</p>
 <p>Make sure you are in your CTSMROOT (the base directory where “cime” and “components” live). Then change directories to cime/scripts. Within the cime/scripts directory is the create_newcase script.</p>
@@ -677,12 +680,46 @@ ls
 cd /glade/scratch/$USER/$CASE/run
 ls
 </code></pre>
+<p>Congratulations! If all went well, you now have a “spunup” case (one .nc file) to work with.</p>
+</div>
+<div id="post-spin-up" class="section level3">
+<h3>4.2 Post Spin-Up</h3>
+<p>General steps (reference to Practical 4, slide 45 onwards)</p>
+<ol style="list-style-type: decimal">
+<li>Create a new case and go to new case directory</li>
+<li>./xmlchanges</li>
+<li>case.setup</li>
+<li>Many more ./xmlchanges - changes to run from 1850-1901 - and nl changes</li>
+<li>build model</li>
+<li>submit case (make sure to update STOP_N, REST_N, and RESUBMIT)</li>
+<li>./xmlchanges - 1901 - 1980 (maybe stop here??)</li>
+<li>remove bin files from scratch case directory</li>
+<li>Copy over user datm streams</li>
+<li>submit case</li>
+<li>./xmlchange - post 1989 <strong>especially RUN_REFCASE</strong></li>
+<li>submite case</li>
+</ol>
+<pre class="bash"><code></code></pre>
+</div>
 </div>
 <div id="setting-up-and-running-a-case" class="section level2">
 <h2>5. Setting Up and Running a Case</h2>
+<p>General Steps:</p>
+<ol style="list-style-type: decimal">
+<li>Create new case or clone</li>
+<li>Go to newly created case directory</li>
+<li>./xmlchanges</li>
+<li>case.setup –reset</li>
+<li>./xmlchanges and nl changes</li>
+<li>Build the case</li>
+<li>Copy over the rpointer and case files from the original case</li>
+<li>Copy over the archive output files</li>
+<li>Submit the case</li>
+</ol>
 </div>
 <div id="model-outputs" class="section level2">
 <h2>6. Model Outputs</h2>
+<p>As noted in the above sections, model output lives in the</p>
 </div>
 <div id="useful-references" class="section level2">
 <h2>7. Useful References</h2>

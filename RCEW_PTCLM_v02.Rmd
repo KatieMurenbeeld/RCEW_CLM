@@ -181,7 +181,9 @@ Make a table of pfts with the acronym and index #
 ### 3.2 Loading Modules
 Modules are software environments for use on Cheyenne. Information on Cheyenne specific modules and software can be found [here](https://www2.cisl.ucar.edu/resources/computational-systems/cheyenne/software) and useful module commands [here](https://www2.cisl.ucar.edu/resources/computational-systems/cheyenne/user-environment/environment-modules#essential_cmds).
 
-You will need to load the appropriate modules in a specific order. **NOTE** Depending on if you use miniconda you may or may mot need to load all of the modules if they are already in the miniconda environment. For example, here I do not *module load python/2* because I will activate a python 2 miniconda environment later.
+You will need to load the appropriate modules in a specific order because some modules are dependent on others, for example a compiler module often needs to be loaded before some of the NCAR specific software modules. 
+
+**NOTE** Depending on if you use miniconda you may or may mot need to load all of the modules if they are already in the miniconda environment. For example, here I do not *module load python/2* because I will activate a python 2 miniconda environment later.
 
 Modules: 
 
@@ -293,7 +295,9 @@ Different folders for each site you run PTCMLmkdata will be found in your data d
 
 The folders will have the following naming convention: 1x1_*site-name*. 
 
-## 4. Accelerated Spin Up
+## 4. Preparation for Simulations
+
+### 4.1 Accelerated Spin Up
 
 Something something, working with soils, getting to a steady state. Need to do a spin up. 
 
@@ -440,10 +444,48 @@ ls
 
 ```
 
+Congratulations! If all went well, you now have a "spunup" case (one .nc file) to work with. 
+
+### 4.2 Post Spin-Up
+
+
+General steps (reference to Practical 4, slide 45 onwards)
+
+1. Create a new case and go to new case directory
+2. ./xmlchanges
+3. case.setup
+4. Many more ./xmlchanges - changes to run from 1850-1901 - and nl changes
+5. build model
+6. submit case (make sure to update STOP_N, REST_N, and RESUBMIT)
+7. ./xmlchanges - 1901 - 1980 (maybe stop here??)
+8. remove bin files from scratch case directory
+9. Copy over user datm streams
+10. submit case
+11. ./xmlchange - post 1989 **especially RUN_REFCASE**
+12. submite case
+
+```{bash post_spin01, echo=TRUE, eval=FALSE}
+
+```
+
 
 ## 5. Setting Up and Running a Case
 
+General Steps:
+
+1. Create new case or clone
+2. Go to newly created case directory
+3. ./xmlchanges
+4. case.setup --reset
+5. ./xmlchanges and nl changes
+6. Build the case
+7. Copy over the rpointer and case files from the original case
+8. Copy over the archive output files
+9. Submit the case
+
 ## 6. Model Outputs
+
+As noted in the above sections, model output lives in the 
 
 ## 7. Useful References
 

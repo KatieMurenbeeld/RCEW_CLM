@@ -86,7 +86,10 @@ ls
 
 ## 3. Set Up for Point Simulations (PTCLM)
 
-The **P**oin**T** **CLM** runs through the steps for creating single point domain and surface data files (link to html for single point and region surface data file generation). PTCLM is a simpler way to create these files specifically for Ameriflux tower sites. The file PTCLMmkdata runs the tools to get datasets set up, and copies them to a location you can use, including the changes needed for a case to use the dataset with namelist and XML changes. There are a few steps you will need to take before you can run the PTCLMmkdata script.
+The **P**oin**T** **CLM** runs through the steps for creating single point domain and surface data files (link to html for single point and region surface data file generation). PTCLM is a simpler way to create these files specifically for Ameriflux tower sites. The file PTCLMmkdata runs the tools to get datasets set up, and copies them to a location you can use, including the changes needed for a case to use the dataset with namelist and XML changes. There are a few steps you will need to take before you can run the PTCLMmkdata script. For more information on the PTCLMmkdata script see the README file here: 
+$CTSMROOT/tools/PTCLM/
+
+*Note* you will setup the **CTSMROOT** in the next code block. 
 
 ### 3.1 Site Specific Data
 
@@ -170,7 +173,7 @@ module load ncview/2.1.7
 # module load python/2.*, optional
 ```
 
-### 3.3 Running PTCLMmkdata
+### 3.3 Running PTCLMmkdata 
 
 Change directory to the PTCLM folder. From there execute the buildtools script. Buildtools will...
 
@@ -219,12 +222,40 @@ PTCLMsublist will output a command to copy and paste into the terminal. It will 
 ./PTCLMmkdata -s US-Rwe -d /glade/p/cesm/cseg/inputdata
 ```
 
-What is this command doing? ... 
+What is this command doing? 
+For more information on the PTCLMmkdata script see the README file here: 
+$CTSMROOT/tools/PTCLM/
+
+Basically, PTCLMmkdata is a python script that runs through the process of creating the 
+
+
 
 Again, this process can take a long time. You may need to run this command multiple times. However, once the mapping files are created they will be skipped over if you have to rerun the PTCLMmkdata command. 
 
+### 3.4 Where does my data go?
 
-**NOTE** Make sure to add in where to find the newly created files. 
+Running
+```{bash data_loc, echo=TRUE, eval=FALSE}
+./PTCLMmkdata --help
+>...
+--mydatadir=MYDATADIR
+                        Directory of where to put your data files (files will
+                        be under subdirectories for each site) (default: /glad
+                        e/work/katiem/git/ctsm_rcew/tools/PTCLM/mydatafiles)
+...
+```
+will show the default data directory. In this case mydatadir = /glade/work/katiem/git/ctsm_rcew/tools/PTCLM/mydatafiles
+                        
+You can set a different file path as an environmental variable, but I find that the default works fine. 
+```{bash ptclm_datadir, echo=TRUE, eval=FALSE}
+MYDATADIR=/glade/work/katiem/srfdata/
+./PTCLMmkdata -s US-Rwe --mydatadir=$MYDATADIR -d /glade/p/cesm/cseg/inputdata
+```
+
+
+Different folders for each site you run PTCMLmkdata will be found in your data directory (mydatadir). 
+
+The folders will have the following naming convention: 1x1_*site-name*. 
 
 ## 4. Accelerated Spin Up
 
@@ -233,6 +264,7 @@ Something something, working with soils, getting to a steady state. Need to do a
 Within this section, also some of the (not so basic) basics for creating and submitting a CLM "case", or simulation.
 
 Make sure you are in your CTSMROOT (the base directory where "cime" and "components" live). Then change directories to cime/scripts. Within the cime/scripts directory is the create_newcase script.  
+
 ```{bash spinup_createnew, echo=TRUE, eval=FALSE}
 cd cime/scripts/
 
@@ -250,7 +282,15 @@ Once the new case is created, move into the newly created case directory.
 ```{bash spinup_cdcase, echo=TRUE, eval=FALSE}
 cd /glade/work/katiem/SITS_cases/Rwe1_CLM50spinup_001
 ```
-From here you will update some enviroenmental variables for the case using the command xmlchange. These variables are specific to the machine (computer). As a note. ./xmlquery...
+
+From here you will update some environmental variables for the case using the command xmlchange. These variables are specific to the machine (computer). As a note. ./xmlquery can be used to look up specfic environmental variables in case you can't remember the name. 
+
+```{bash xmlquery, echo=TRUE, eval=FALSE}
+./xmlquery WALL
+>
+```
+
+
 For a list and more information on the variables you can search for the variables on this webpage http://www.cesm.ucar.edu/models/cesm2/settings/2.1.0/drv_input.html. (I suggest bookmarking this page!)
 
 ```{bash env_mach_pes, echo=TRUE, eval=FALSE}
@@ -262,7 +302,7 @@ For a list and more information on the variables you can search for the variable
 ./xmlchange --file env_mach_pes.xml --id ROOTPE --val 0
 ```
 
-After you've updated the above variables, you are now ready to setup the case. When you setup the case....
+After you've updated the above variables, you are now ready to setup the case. When you setup the case 
 
 ```{bash spinup_casesetup, echo=TRUE, eval=FALSE}
 # Remember you are still in the case directory
@@ -294,7 +334,7 @@ Once your case is setup you will update many more variables using the ./xmlchang
 
 ```
 
-Next, you will point to the domain files you created in section 3. 
+Next, you will point to the domain files you created in [Section 3]. 
 
 ```{bash spinup_domain, echo=TRUE, eval=FALSE}
 

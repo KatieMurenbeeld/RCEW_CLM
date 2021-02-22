@@ -896,15 +896,41 @@ echo &quot;hist_mfilt = 12&quot; &gt;&gt; user_nl_clm </code></pre>
 </div>
 <div id="build-the-case" class="section level4">
 <h4>5.5 Build the case</h4>
+<pre class="bash"><code>qcmd -- ./case.build
+&gt;MODEL BUILD HAS FINISHED SUCCESSFULLY</code></pre>
 </div>
 <div id="copy-over-the-rpointer-and-case-files-from-the-original-case" class="section level4">
 <h4>5.6 Copy over the rpointer and case files from the original case</h4>
+<p>One thing that is different about this simulation is the reference to</p>
+<pre class="bash"><code>## Copy over the rpointer files
+cp -avr /glade/scratch/katiem/Rwe1_CLM50histsp_1980_001/run/rpointer.* /glade/scratch/katiem/Rwe1_CLM50histsp_h1e1_005/run/
+
+cp -avr /glade/scratch/katiem/Rwe1_CLM50histsp_1980_001/run/Rwe1_CLM50histsp_1980_001* /glade/scratch/katiem/Rwe1_CLM50histsp_h1e1_005/run/
+
+## Check to see that they copied over correctly
+cd /glade/scratch/katiem/Rwe1_CLM50histsp_h1e1_005/run/
+ls</code></pre>
 </div>
 <div id="copy-over-the-archive-output-files" class="section level4">
 <h4>5.7 Copy over the archive output files</h4>
+<pre class="bash"><code>## Next make a directory in the scratch archive and copy over the original files
+cd /glade/scratch/katiem/archive/
+
+mkdir Rwe1_CLM50histsp_h1e1_005
+
+cp -avr /glade/scratch/katiem/archive/Rwe1_CLM50histsp_1980_001/* /glade/scratch/katiem/archive/Rwe1_CLM50histsp_h1e1_005/
+
+## Check to make sure they copied over correctly
+cd /glade/scratch/katiem/archive/Rwe1_CLM50histsp_h1e1_005/lnd/hist
+ls</code></pre>
 </div>
 <div id="submit-the-case-1" class="section level4">
 <h4>5.8 Submit the case</h4>
+<pre class="bash"><code>## Change back to the cloned case directory
+cd /glade/work/katiem/SITS_cases/Rwe1_CLM50histsp_h1e1_005/
+
+## And submit the case!
+./case.submit</code></pre>
 </div>
 </div>
 <div id="model-outputs" class="section level2">

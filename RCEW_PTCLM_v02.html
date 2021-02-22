@@ -601,7 +601,15 @@ SITE=US-Rwe</code></pre>
 <pre class="bash"><code>cd cime/scripts/
 
 ./create_newcase --compset 2000_DATM%GSWP3v1_CLM50%BGC_SICE_SOCN_SROF_SGLC_SWAV --res f09_g17 --case /glade/work/katiem/SITS_cases/Rwe1_CLM50spinup_001 --run-unsupported --project UBOI0003</code></pre>
-<p>In order to create a new case there are 3 required arguments: compset, res, and case. The compset… The res… The case… The other arguments used here are run-unsupported and project. The run-unsupported … The project… If you are interested in the arguments please see the help documentation by running</p>
+<p>In order to create a new case there are 3 required arguments: compset, res, and case.</p>
+<p>The <strong>compset</strong> argument sets the “component set”. This specifies set all the model components used in the simulation. For example, this sets the river routing scheme or essentially turns of a model component by using a “stub”. For example, many times land only simulations can use the stub sea-ice component. All the compsets can be found <a href="https://www.cesm.ucar.edu/models/cesm2/config/compsets.html">here</a>.</p>
+<p>The <strong>res</strong> argument sets the model’s resolution. All resolutions are listed <a href="https://www.cesm.ucar.edu/models/cesm2/config/grids.html">here</a>.</p>
+<p>The <strong>case</strong> argument sets the case name and directory location.</p>
+<p>The other arguments used here are run-unsupported and project.</p>
+<p>Some compsets are not scientifically supported. If this is the case one must use the <strong>run-unsupported</strong> flag. The available <a href="https://www.cesm.ucar.edu/models/cesm2/config/compsets.html">compsets</a> will have a support level.</p>
+<p>The <strong>project</strong> argument is where you input your project number so that NCAR can correctly charge compute hours.</p>
+<p>If you are interested in the arguments please see the help documentation by running</p>
+<pre class="bash"><code>./create_newcase --help</code></pre>
 <p>As an aside, there are four basic steps to setting up and running CTSM simulations.</p>
 <ol style="list-style-type: decimal">
 <li><strong>Create</strong> the <strong>new case</strong></li>
@@ -609,21 +617,20 @@ SITE=US-Rwe</code></pre>
 <li>The <strong>build the model</strong> (sometimes after more changes to environment variables)</li>
 <li>Once the model is built, <strong>submit</strong> the case to Cheyenne’s batch processing system, pbs</li>
 </ol>
-<p>More information can be found in <a href="https://www.cgd.ucar.edu/events/2019/ctsm/files/practical1-lombardozzi.pdf">practical 1</a> from the above mentioned 2019 CTSM tutorial and of course in the “–help” documentation.</p>
-<pre class="bash"><code>./create_newcase --help</code></pre>
-<p>Once the new case is created, move into the newly created case directory.</p>
+<p>More information can be found in <a href="https://www.cgd.ucar.edu/events/2019/ctsm/files/practical1-lombardozzi.pdf">practical 1</a> from the above mentioned 2019 CTSM tutorial.</p>
+<p>Once the new case is created, move into the newly created case directory. Within the case directory you will find the scripts to run the case setup (case.setup), build the model (script), and submit the case to the batch system (case.submit).</p>
 <pre class="bash"><code>cd /glade/work/katiem/SITS_cases/Rwe1_CLM50spinup_001</code></pre>
 <p>From here you will update some environmental variables for the case using the command xmlchange. These variables are specific to the machine (computer). As a note. ./xmlquery can be used to look up specfic environmental variables in case you can’t remember the name.</p>
 <pre class="bash"><code>./xmlquery WALL
 &gt;</code></pre>
-<p>For a list and more information on the variables you can search for the variables on this webpage <a href="http://www.cesm.ucar.edu/models/cesm2/settings/2.1.0/drv_input.html" class="uri">http://www.cesm.ucar.edu/models/cesm2/settings/2.1.0/drv_input.html</a>. (I suggest bookmarking this page!)</p>
+<p>For a list and more information on the variables you can search for, see [this webpage] (<a href="http://www.cesm.ucar.edu/models/cesm2/settings/2.1.0/drv_input.html" class="uri">http://www.cesm.ucar.edu/models/cesm2/settings/2.1.0/drv_input.html</a>). I suggest bookmarking this page!</p>
 <pre class="bash"><code>./xmlchange MPILIB=mpi-serial
 ./xmlchange --file env_mach_pes.xml --id COST_PES --val 36
 ./xmlchange --file env_mach_pes.xml --id TOTALPES --val 1
 ./xmlchange --file env_mach_pes.xml --id NTASKS --val 1
 ./xmlchange --file env_mach_pes.xml --id NTASKS_PER_INST --val 1
 ./xmlchange --file env_mach_pes.xml --id ROOTPE --val 0</code></pre>
-<p>After you’ve updated the above variables, you are now ready to setup the case. When you setup the case</p>
+<p>After you’ve updated the above variables, you are now ready to setup the case. The case.setup script lives</p>
 <pre class="bash"><code># Remember you are still in the case directory
 
 ./case.setup

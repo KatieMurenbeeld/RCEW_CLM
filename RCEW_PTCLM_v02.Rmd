@@ -297,13 +297,13 @@ The folders will have the following naming convention: 1x1_*site-name*.
 
 ## 4. Preparation for Simulations
 
-### 4.1 Accelerated Spin Up
+Within this section we will work through the spinup, post spinup, and simulation process. The majority of these instructions are taken from the CTSM 2019 tutorial practical 4 [link](https://www.cgd.ucar.edu/events/2019/ctsm/files/practical4-wieder.pdf). All of the practicals are incredibly useful and can be found [here](https://www.cgd.ucar.edu/events/2019/ctsm/).
 
-Something something, working with soils, getting to a steady state. Need to do a spin up. 
+### 4.1 Spin Up
 
-Within this section, also some of the (not so basic) basics for creating and submitting a CLM "case", or simulation.
+When working with soils, one needs to get to a steady state. In this case, the steady state is the equilibrium conditions given the climate forcing data used. One needs to assume a steady state in order to test transient conditions (i.e. hypotheses, changes to soil properties, CO2 scenarios, etc.). Therefore, the first step in the simulation process is to complete an "accelerated" spin up.
 
-Make sure you are in your CTSMROOT (the base directory where "cime" and "components" live). Then change directories to cime/scripts. Within the cime/scripts directory is the create_newcase script.  
+Make sure you are in your CTSMROOT (the base directory where "cime" and "components" live). Then change directories to cime/scripts. Within the cime/scripts directory is the create_newcase script. 
 
 ```{bash spinup_createnew, echo=TRUE, eval=FALSE}
 cd cime/scripts/
@@ -312,6 +312,15 @@ cd cime/scripts/
 ```
 
 In order to create a new case there are 3 required arguments: compset, res, and case. The compset... The res... The case... The other arguments used here are run-unsupported and project. The run-unsupported ... The project... If you are interested in the arguments please see the help documentation by running
+
+As an aside, there are four basic steps to setting up and running CTSM simulations.
+
+1. **Create** the **new case**
+2. Following some changes to the environment variables, **setup** the case 
+3. The **build the model** (sometimes after more changes to environment variables)
+4. Once the model is built, **submit** the case to Cheyenne's batch processing system, pbs
+
+More information can be found in [practical 1](https://www.cgd.ucar.edu/events/2019/ctsm/files/practical1-lombardozzi.pdf) from the above mentioned 2019 CTSM tutorial and of course in the "--help" documentation.
 
 ```{bash newcase_help, echo=TRUE, eval=FALSE}
 ./create_newcase --help

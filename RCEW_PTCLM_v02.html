@@ -593,15 +593,23 @@ SITE=US-Rwe</code></pre>
 </div>
 <div id="preparation-for-simulations" class="section level2">
 <h2>4. Preparation for Simulations</h2>
-<div id="accelerated-spin-up" class="section level3">
-<h3>4.1 Accelerated Spin Up</h3>
-<p>Something something, working with soils, getting to a steady state. Need to do a spin up.</p>
-<p>Within this section, also some of the (not so basic) basics for creating and submitting a CLM “case”, or simulation.</p>
+<p>Within this section we will work through the spinup, post spinup, and simulation process. The majority of these instructions are taken from the CTSM 2019 tutorial practical 4 <a href="https://www.cgd.ucar.edu/events/2019/ctsm/files/practical4-wieder.pdf">link</a>. All of the practicals are incredibly useful and can be found <a href="https://www.cgd.ucar.edu/events/2019/ctsm/">here</a>.</p>
+<div id="spin-up" class="section level3">
+<h3>4.1 Spin Up</h3>
+<p>When working with soils, one needs to get to a steady state. In this case, the steady state is the equilibrium conditions given the climate forcing data used. One needs to assume a steady state in order to test transient conditions (i.e. hypotheses, changes to soil properties, CO2 scenarios, etc.). Therefore, the first step in the simulation process is to complete an “accelerated” spin up.</p>
 <p>Make sure you are in your CTSMROOT (the base directory where “cime” and “components” live). Then change directories to cime/scripts. Within the cime/scripts directory is the create_newcase script.</p>
 <pre class="bash"><code>cd cime/scripts/
 
 ./create_newcase --compset 2000_DATM%GSWP3v1_CLM50%BGC_SICE_SOCN_SROF_SGLC_SWAV --res f09_g17 --case /glade/work/katiem/SITS_cases/Rwe1_CLM50spinup_001 --run-unsupported --project UBOI0003</code></pre>
 <p>In order to create a new case there are 3 required arguments: compset, res, and case. The compset… The res… The case… The other arguments used here are run-unsupported and project. The run-unsupported … The project… If you are interested in the arguments please see the help documentation by running</p>
+<p>As an aside, there are four basic steps to setting up and running CTSM simulations.</p>
+<ol style="list-style-type: decimal">
+<li><strong>Create</strong> the <strong>new case</strong></li>
+<li>Following some changes to the environment variables, <strong>setup</strong> the case</li>
+<li>The <strong>build the model</strong> (sometimes after more changes to environment variables)</li>
+<li>Once the model is built, <strong>submit</strong> the case to Cheyenne’s batch processing system, pbs</li>
+</ol>
+<p>More information can be found in <a href="https://www.cgd.ucar.edu/events/2019/ctsm/files/practical1-lombardozzi.pdf">practical 1</a> from the above mentioned 2019 CTSM tutorial and of course in the “–help” documentation.</p>
 <pre class="bash"><code>./create_newcase --help</code></pre>
 <p>Once the new case is created, move into the newly created case directory.</p>
 <pre class="bash"><code>cd /glade/work/katiem/SITS_cases/Rwe1_CLM50spinup_001</code></pre>

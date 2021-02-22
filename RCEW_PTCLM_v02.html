@@ -620,22 +620,22 @@ SITE=US-Rwe</code></pre>
 <p>More information can be found in <a href="https://www.cgd.ucar.edu/events/2019/ctsm/files/practical1-lombardozzi.pdf">practical 1</a> from the above mentioned 2019 CTSM tutorial.</p>
 <p>Once the new case is created, move into the newly created case directory. Within the case directory you will find the scripts to run the case setup (case.setup), build the model (script), and submit the case to the batch system (case.submit).</p>
 <pre class="bash"><code>cd /glade/work/katiem/SITS_cases/Rwe1_CLM50spinup_001</code></pre>
-<p>From here you will update some environmental variables for the case using the command xmlchange. These variables are specific to the machine (computer). As a note. ./xmlquery can be used to look up specfic environmental variables in case you can’t remember the name.</p>
-<pre class="bash"><code>./xmlquery WALL
-&gt;</code></pre>
-<p>For a list and more information on the variables you can search for, see [this webpage] (<a href="http://www.cesm.ucar.edu/models/cesm2/settings/2.1.0/drv_input.html" class="uri">http://www.cesm.ucar.edu/models/cesm2/settings/2.1.0/drv_input.html</a>). I suggest bookmarking this page!</p>
+<p>From here you will update some environmental variables for the case using the command xmlchange. These variables are specific to the machine (Cheyenne). For a list and more information on the variables you can search for, see [this webpage] (<a href="http://www.cesm.ucar.edu/models/cesm2/settings/2.1.0/drv_input.html" class="uri">http://www.cesm.ucar.edu/models/cesm2/settings/2.1.0/drv_input.html</a>). I suggest bookmarking this page!</p>
 <pre class="bash"><code>./xmlchange MPILIB=mpi-serial
 ./xmlchange --file env_mach_pes.xml --id COST_PES --val 36
 ./xmlchange --file env_mach_pes.xml --id TOTALPES --val 1
 ./xmlchange --file env_mach_pes.xml --id NTASKS --val 1
 ./xmlchange --file env_mach_pes.xml --id NTASKS_PER_INST --val 1
 ./xmlchange --file env_mach_pes.xml --id ROOTPE --val 0</code></pre>
+<p>You can also use ./xmlquery to check the current values of the variables.</p>
+<pre class="bash"><code>./xmlquery COST_PES
+&gt;   COST_PES: 36</code></pre>
 <p>After you’ve updated the above variables, you are now ready to setup the case. The case.setup script lives</p>
 <pre class="bash"><code># Remember you are still in the case directory
 
 ./case.setup
 </code></pre>
-<p>Once your case is setup you will update many more variables using the ./xmlchange command.</p>
+<p>Once your case is setup you will update many more variables using the ./xmlchange command. <em>Note:</em> you are still in the Rwe1_CLM50spinup_001 case directory.</p>
 <pre class="bash"><code>./xmlchange --file env_run.xml --id CLM_FORCE_COLDSTART --val on
 ./xmlchange --file env_run.xml --id CLM_NML_USE_CASE --val 1850_control
 ./xmlchange --file env_run.xml --id DATM_CLMNCEP_YR_START --val 1901
@@ -654,14 +654,15 @@ SITE=US-Rwe</code></pre>
 # Set the interval (in years) where a restart file will be created.
 ./xmlchange --file env_run.xml --id REST_N --val 100
 </code></pre>
-<p>Next, you will point to the domain files you created in [Section 3].</p>
+<p>Next, you will point to the domain files you created in Section 3.</p>
 <pre class="bash"><code>
 ./xmlchange --file env_run.xml --id ATM_DOMAIN_FILE --val domain.lnd.1x1pt_US-Rwe_navy.200721.nc
 ./xmlchange --file env_run.xml --id ATM_DOMAIN_PATH --val /glade/work/katiem/SITS_data
 ./xmlchange --file env_run.xml --id LND_DOMAIN_FILE --val domain.lnd.1x1pt_US-Rwe_navy.200721.nc
 ./xmlchange --file env_run.xml --id LND_DOMAIN_PATH --val /glade/work/katiem/SITS_data
 </code></pre>
-<p>Next, you will update the user_nl_clm (the CLM user namelist) file. In this file… You will set the surface data file to the surfdata file you created in section 3.</p>
+<p>Next, you will update the user_nl_clm (the CLM user namelist) file. Namelist files are also used to update model options and input data. There are many other CLM namelist options and definitions that can be found <a href="https://www.cesm.ucar.edu/models/cesm2/settings/current/clm5_0_nml.html">here</a>, but for now you only need to worry about the options listed in the code block below.</p>
+<p>You will set the surface data file to the surfdata file you created in Section 3.</p>
 <pre class="bash"><code>echo &quot;fsurdat = &#39;/glade/work/katiem/SITS_data/surfdata_1x1pt_US-Rwe_hist_16pfts_Irrig_CMIP6_simyr2000_c200721.nc&#39;&quot; &gt;&gt; user_nl_clm
 echo &quot;hist_mfilt = 20&quot; &gt;&gt; user_nl_clm
 echo &quot;hist_nhtfrq = -8760&quot; &gt;&gt; user_nl_clm
@@ -671,9 +672,9 @@ echo &quot;hist_fincl1 = &#39;TOTECOSYSC&#39;, &#39;TOTECOSYSN&#39;, &#39;TOTSOM
 &#39;H2OSNO&#39;&quot; &gt;&gt; user_nl_clm
 
 echo &quot;mapalgo = &#39;nn&#39;,&#39;nn&#39;,&#39;nn&#39;,&#39;nn&#39;,&#39;nn&#39;&quot; &gt;&gt; user_nl_datm</code></pre>
-<p>If you have your own climate or atmospheric forcing data to use (for example you want to use the atmospheric data from the flux tower at your site) you can now copy over the user_datm.streams files you created (see section X).</p>
+<p>If you have your own climate or atmospheric forcing data to use (for example you want to use the atmospheric data from the flux tower at your site) you can now copy over the user_datm.streams files you created (see <a href="https://www.cesm.ucar.edu/models/cesm1.2/clm/models/lnd/clm/doc/UsersGuide/x13434.html#AmeriFluxdata">CLM4.5 User’s Guide</a>. For some reason the link to the same information in the CLM5.0 User’s Guide does not work.)</p>
 <pre class="bash"><code>cp ../Rwe1_CLM50spinup_001/user_datm.streams.txt.* .</code></pre>
-<p>Double check the your namelist file (user_nl_clm) using your text editor of choice or the command.</p>
+<p>Double check the your namelist file (user_nl_clm) using your text editor of choice or the “cat” command.</p>
 <pre class="bash"><code>vim user_nl_clm
 
 ## or...
@@ -696,6 +697,9 @@ cd /glade/scratch/$USER/$CASE/run
 ls
 </code></pre>
 <p>Congratulations! If all went well, you now have a “spunup” case (one .nc file) to work with.</p>
+<p>The output data will be found in your scratch directory. For example, the output data (i.e. history, <em>hist</em>, files) from this example would be found in the following directory:</p>
+<p>/glade/scratch/katiem/archive/Rwe1_CLM50spinup_001/lnd/hist</p>
+<p>The <strong>lnd</strong> refers to the lnd component outputs. If you look at the all the file directories under /glade/scratch/katiem/archive/Rwe1_CLM50spinup_001/ you will see a folder for each of the CTSM components.</p>
 </div>
 <div id="post-spin-up" class="section level3">
 <h3>4.2 Post Spin-Up</h3>

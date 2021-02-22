@@ -771,7 +771,17 @@ ncview Rwe1_CLM50postsp_001*.nc
 
 The user interface allows one to quickly view a specific output.
 
-<insert screen shots of ncview>
+```{r clm_fig02, echo=FALSE, eval=TRUE, fig.cap="ncview graphical user interface (GUI)"}
+knitr::include_graphics("figures/ncview_01_markup.png")
+```
+
+```{r clm_fig03, echo=FALSE, eval=TRUE, fig.cap="ncview GUI for 2D variables"}
+knitr::include_graphics("figures/ncview_02_markup.png")
+```
+
+```{r clm_fig04, echo=FALSE, eval=TRUE, fig.cap="volumetric soil water through soil level at time t"}
+knitr::include_graphics("figures/ncview_03.png")
+```
 
 ## 7. Useful References
 

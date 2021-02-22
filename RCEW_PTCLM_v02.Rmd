@@ -409,6 +409,14 @@ Once your case is setup you will update many more variables using the ./xmlchang
 # This configuration will run for 500 years.
 ```
 
+A note about STOP_OPTION, STOP_N,and RESUBMIT. These three variables determine the timing of the simulation. STOP_OPTION gives the units of time, for example number of years (nyears). Other options for STOP_OPTION include number of days (ndays), number of months (nmonths), number of hours (nhours), etc. STOP_N is the count of STOP_OPTION. In this case, STOP_OPTION is in number of years, so STOP_N tells the model to run for 10 years. RESUBMIT is very important and tells the model when to resubmit the case. In this case we are resubmitting the 10 year model 50 times, resulting in 500 years total. For a 500 year spinup these component variables could also be set:
+
+* STOP_OPTION = nyears
+* STOP_N = 1
+* RESUBMIT = 500
+
+REST_N sets the number of restart files created. This is useful if you know you want to restart from a case. In this case a restart file is created for every 10 years. REST_N could also be set to create a restart file every one year or every 100 years. 
+
 Next, you will point to the domain files you created in Section 3. If you'll notice the file paths here (ATM_DOMAIN_PATH, LND_DOMAIN_PATH). It is optional to copy and paste the surface data files created in section 3 to a different directory. If you do not, the ATM_ and LND_DOMAIN_PATH would be /glade/work/katiem/git/ctsm_rcew/tools/PTCLM/mydatafiles/1x1_US-Rwe
 
 ```{bash spinup_domain, echo=TRUE, eval=FALSE}
@@ -832,7 +840,7 @@ CESM compsets [link](https://www.cesm.ucar.edu/models/cesm2/config/compsets.html
 
 CESM resolutions [link](https://www.cesm.ucar.edu/models/cesm2/config/grids.html).
 
-Cheyenne environment variables list and information [link](http://www.cesm.ucar.edu/models/cesm2/settings/2.1.0/drv_input.html).
+CESM component variables list and information [link](http://www.cesm.ucar.edu/models/cesm2/settings/2.1.0/drv_input.html).
 
 Coverting Ameriflux data, from CLM4.5 User's Guide  [link](https://www.cesm.ucar.edu/models/cesm1.2/clm/models/lnd/clm/doc/UsersGuide/x13434.html#AmeriFluxdata)
 

@@ -570,7 +570,7 @@ SITE=US-Rwe</code></pre>
 <p>PTCLMsublist will output a command to copy and paste into the terminal. It will look something like this…</p>
 <pre class="bash"><code>./PTCLMmkdata -s US-Rwe -d /glade/p/cesm/cseg/inputdata</code></pre>
 <p>What is this command doing? For more information on the PTCLMmkdata script see the README file here: $CTSMROOT/tools/PTCLM/</p>
-<p>Basically, PTCLMmkdata is a python script that runs through the process of creating the</p>
+<p>Basically, PTCLMmkdata is a python script that runs through the process of creating the surface data files for a single point. In this case the single point is an Ameriflux tower site.</p>
 <p>Again, this process can take a long time. You may need to run this command multiple times. However, once the mapping files are created they will be skipped over if you have to rerun the PTCLMmkdata command.</p>
 </div>
 <div id="where-does-my-data-go" class="section level3">
@@ -588,7 +588,7 @@ SITE=US-Rwe</code></pre>
 <pre class="bash"><code>MYDATADIR=/glade/work/katiem/srfdata/
 ./PTCLMmkdata -s US-Rwe --mydatadir=$MYDATADIR -d /glade/p/cesm/cseg/inputdata</code></pre>
 <p>Different folders for each site you run PTCMLmkdata will be found in your data directory (mydatadir).</p>
-<p>The folders will have the following naming convention: 1x1_<em>site-name</em>.</p>
+<p>The folders will have the following naming convention: 1x1_<em>site-name</em>. So for this example, all of the surface and domain files are here: /glade/work/katiem/git/ctsm_rcew/tools/PTCLM/mydatafiles/1x1_US-Rwe</p>
 </div>
 </div>
 <div id="preparation-for-simulations" class="section level2">
@@ -626,7 +626,9 @@ SITE=US-Rwe</code></pre>
 ./xmlchange --file env_mach_pes.xml --id TOTALPES --val 1
 ./xmlchange --file env_mach_pes.xml --id NTASKS --val 1
 ./xmlchange --file env_mach_pes.xml --id NTASKS_PER_INST --val 1
-./xmlchange --file env_mach_pes.xml --id ROOTPE --val 0</code></pre>
+./xmlchange --file env_mach_pes.xml --id ROOTPE --val 0
+./xmlchange JOB_WALLCLOCK_TIME=06:00:00 # May cause an ERROR
+./xmlchange JOB_QUEUE=regular # May cause an ERROR</code></pre>
 <p>You can also use ./xmlquery to check the current values of the variables.</p>
 <pre class="bash"><code>./xmlquery COST_PES
 &gt;   COST_PES: 36</code></pre>
@@ -650,11 +652,14 @@ SITE=US-Rwe</code></pre>
 ./xmlchange --file env_run.xml --id CLM_ACCELERATED_SPINUP --val on
 
 # Set the total number of years to run. 
-./xmlchange --file env_run.xml --id STOP_N --val 500
+./xmlchange --file env_run.xml --id STOP_N --val 10
 # Set the interval (in years) where a restart file will be created.
-./xmlchange --file env_run.xml --id REST_N --val 100
-</code></pre>
-<p>Next, you will point to the domain files you created in Section 3.</p>
+./xmlchange --file env_run.xml --id REST_N --val 10
+# Set the number of times to resubmit
+./xmlchange --file env_run.xml --id RESUBMIT --val 50
+
+# This configuration will run for 500 years.</code></pre>
+<p>Next, you will point to the domain files you created in Section 3. If you’ll notice the file paths here (ATM_DOMAIN_PATH, LND_DOMAIN_PATH). It is optional to copy and paste the surface data files created in section 3 to a different directory. If you do not, the ATM_ and LND_DOMAIN_PATH would be /glade/work/katiem/git/ctsm_rcew/tools/PTCLM/mydatafiles/1x1_US-Rwe</p>
 <pre class="bash"><code>
 ./xmlchange --file env_run.xml --id ATM_DOMAIN_FILE --val domain.lnd.1x1pt_US-Rwe_navy.200721.nc
 ./xmlchange --file env_run.xml --id ATM_DOMAIN_PATH --val /glade/work/katiem/SITS_data
@@ -703,22 +708,131 @@ ls
 </div>
 <div id="post-spin-up" class="section level3">
 <h3>4.2 Post Spin-Up</h3>
-<p>General steps (reference to Practical 4, slide 45 onwards)</p>
+<p>Now that we have 500 years of spinup complete, one has the option to build up to whatever more modern year one would like (normally the beginning year of climate forcing data used). Most of the instructions here again come from <a href="https://www.cgd.ucar.edu/events/2019/ctsm/files/practical4-wieder.pdf">Practical 4</a> of the 2019 CTSM tutorial, specifically slides 45 onward. The general steps are as follows:</p>
 <ol style="list-style-type: decimal">
 <li>Create a new case and go to new case directory</li>
-<li>./xmlchanges</li>
+<li>./xmlchanges before running case.setup</li>
 <li>case.setup</li>
 <li>Many more ./xmlchanges - changes to run from 1850-1901 - and nl changes</li>
-<li>build model</li>
-<li>submit case (make sure to update STOP_N, REST_N, and RESUBMIT)</li>
-<li>./xmlchanges - 1901 - 1980 (maybe stop here??)</li>
-<li>remove bin files from scratch case directory</li>
-<li>Copy over user datm streams</li>
-<li>submit case</li>
-<li>./xmlchange - post 1989 <strong>especially RUN_REFCASE</strong></li>
-<li>submite case</li>
+<li>Build the model</li>
+<li>Submit case</li>
+<li>./xmlchanges - 1901 - 1980</li>
+<li>Remove bin files from scratch case directory</li>
+<li>Submit case</li>
 </ol>
-<pre class="bash"><code></code></pre>
+<div id="create-a-new-case-and-go-to-the-new-cases-directory" class="section level4">
+<h4>4.2.1 Create a new case and go to the new case’s directory</h4>
+<pre class="bash"><code># Go to the cime scripts direcotry
+cd /glade/work/katiem/git/ctsm_sits/cime/scripts
+
+# Create a new case
+./create_newcase --compset HIST_DATM%GSWP3v1_CLM50%BGC_SICE_SOCN_SROF_SGLC_SWAV --res
+f09_g17 --case /glade/work/katiem/SITS_cases/Rwe1_CLM50postspin001 --run-unsupported --project UBOI0003
+
+# Go to the new case directory
+cd /glade/work/katiem/SITS_cases/Rwe1_CLM50postspin001
+</code></pre>
+</div>
+<div id="xmlchanges-before-running-case.setup" class="section level4">
+<h4>4.2.2 ./xmlchanges before running case.setup</h4>
+<pre class="bash"><code>./xmlchange MPILIB=mpi-serial
+./xmlchange --file env_mach_pes.xml --id COST_PES --val 36
+./xmlchange --file env_mach_pes.xml --id TOTALPES --val 1
+./xmlchange --file env_mach_pes.xml --id NTASKS --val 1
+./xmlchange --file env_mach_pes.xml --id NTASKS_PER_INST --val 1
+./xmlchange --file env_mach_pes.xml --id ROOTPE --val 0
+./xmlchange JOB_WALLCLOCK_TIME=06:00:00 # May cause an ERROR
+./xmlchange JOB_QUEUE=regular # May cause an ERROR
+</code></pre>
+</div>
+<div id="run-case.setup" class="section level4">
+<h4>4.2.3 Run case.setup</h4>
+<pre class="bash"><code>./case.setup</code></pre>
+</div>
+<div id="more-.xmlchanges---changes-to-run-from-1850-1901---and-nl-changes" class="section level4">
+<h4>4.2.4 More ./xmlchanges - changes to run from 1850-1901 - and nl changes</h4>
+<pre class="bash"><code>./xmlchange --file env_run.xml --id ATM_DOMAIN_FILE --val domain.lnd.1x1pt_US-Rwe_navy.200721.nc
+./xmlchange --file env_run.xml --id ATM_DOMAIN_PATH --val /glade/work/katiem/SITS_data
+./xmlchange --file env_run.xml --id LND_DOMAIN_FILE --val domain.lnd.1x1pt_US-Rwe_navy.200721.nc
+./xmlchange --file env_run.xml --id LND_DOMAIN_PATH --val /glade/work/katiem/SITS_data
+
+#Changes for a 20th century transient (some of these may not be necessary)
+./xmlchange CCSM_BGC=CO2A
+./xmlchange DATM_PRESAERO=trans_1850-2000
+./xmlchange DATM_CO2_TSERIES=20tr
+./xmlchange CLM_NML_USE_CASE=20thC_transient
+./xmlchange CLM_CO2_TYPE=diagnostic
+
+##Changes to run from 1850-1901 --
+./xmlchange DATM_CLMNCEP_YR_ALIGN=1850
+./xmlchange RUN_TYPE=startup
+./xmlchange CONTINUE_RUN=FALSE
+./xmlchange DATM_CLMNCEP_YR_ALIGN=1850
+./xmlchange CLM_FORCE_COLDSTART=off
+./xmlchange --file env_run.xml --id DATM_CLMNCEP_YR_START --val 1901
+./xmlchange --file env_run.xml --id DATM_CLMNCEP_YR_END --val 1920
+./xmlchange --file env_run.xml --id STOP_OPTION --val nyears
+./xmlchange --file env_run.xml --id STOP_N --val 51
+./xmlchange --file env_run.xml --id RUN_REFDATE --val 1850-01-01
+./xmlchange --file env_run.xml --id RUN_STARTDATE --val 1850-01-01
+./xmlchange --file env_run.xml --id CLM_ACCELERATED_SPINUP --val off
+./xmlchange --file env_run.xml --id CLM_FORCE_COLDSTART --val off
+
+##Also, update these variables
+./xmlchange --file env_run.xml --id STOP_N --val 1
+./xmlchange --file env_run.xml --id REST_N --val 1
+./xmlchange --file env_run.xml --id RESUBMIT --val 50</code></pre>
+<p>Optional, copy in climate data from the flux tower.</p>
+<pre class="bash"><code># Copy user_datm.streams files from your previous case
+# cp ../Ha1_CLM50sp_001/user_datm.streams.txt.* .</code></pre>
+<p>Make updates to the user namelist files.</p>
+<pre class="bash"><code>echo &quot;mapalgo = &#39;nn&#39;,&#39;nn&#39;,&#39;nn&#39;,&#39;nn&#39;,&#39;nn&#39;&quot; &gt;&gt; user_nl_datm
+echo &quot;finidat = &#39;/glade/scratch/katiem/archive/Rwe1_CLM50spinup_004/rest/0501-01-01-00000/Rwe1_CLM50spinup_004.clm2.r.0501-01-01-00000.nc&#39;&quot; &gt;&gt; user_nl_clm
+echo &quot;fsurdat = &#39;/glade/work/katiem/SITS_data/surfdata_1x1pt_US-Rwe_hist_16pfts_Irrig_CMIP6_simyr2000_c200721.nc&#39;&quot; &gt;&gt; user_nl_clm
+
+echo &quot;do_transient_crops= .false.&quot; &gt;&gt; user_nl_clm
+echo &quot;do_transient_pfts = .false.&quot; &gt;&gt; user_nl_clm
+echo &quot;do_harvest = .false.&quot; &gt;&gt; user_nl_clm
+echo &quot;use_init_interp = .true.&quot; &gt;&gt; user_nl_clm</code></pre>
+</div>
+<div id="build-the-model" class="section level4">
+<h4>4.2.5 Build the model</h4>
+<pre class="bash"><code>qcmd -- ./case.build</code></pre>
+</div>
+<div id="submit-the-case" class="section level4">
+<h4>4.2.6 Submit the Case</h4>
+<pre class="bash"><code>./case.submit</code></pre>
+</div>
+<div id="xmlchanges-for-running-from-1901---1980" class="section level4">
+<h4>4.2.7 ./xmlchanges for running from 1901 - 1980</h4>
+<p>As a reminder, you should still be in the case directory /glade/work/katiem/SITS_cases/Rwe1_CLM50postspin001</p>
+<pre class="bash"><code># after 1901 make these changes (I&#39;m assuming in case directory)
+./xmlchange STOP_OPTION=nyears
+./xmlchange STOP_N=22
+./xmlchange DATM_CLMNCEP_YR_ALIGN=1901
+./xmlchange DATM_CLMNCEP_YR_START=1901
+./xmlchange DATM_CLMNCEP_YR_END=2014
+./xmlchange CONTINUE_RUN=TRUE
+./xmlchange RESUBMIT=3</code></pre>
+</div>
+<div id="remove-bin-files-from-scratch-case-directory" class="section level4">
+<h4>4.2.8 Remove bin files from scratch case directory</h4>
+<pre class="bash"><code>## cd into the case run directory on scratch
+cd /glade/scratch/katiem/Rwe1_CLM50postsp_001/run
+## remove the bin file
+rm Rwe1_CLM50postsp_001.datm.rs1.1901-01-01-00000.bin</code></pre>
+</div>
+<div id="rebuild-the-model-and-submit-case" class="section level4">
+<h4>4.2.9 Rebuild the Model and Submit case</h4>
+<pre class="bash"><code>
+cd /glade/work/katiem/SITS_cases/Rwe1_CLM50postsp_001
+
+qcmd -- ./case.build
+
+&gt; MODEL BUILD HAS FINISHED SUCCESSFULLY
+
+./case.submit</code></pre>
+</div>
 </div>
 </div>
 <div id="setting-up-and-running-a-case" class="section level2">

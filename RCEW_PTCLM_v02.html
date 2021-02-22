@@ -630,7 +630,7 @@ SITE=US-Rwe</code></pre>
 <p>More information can be found in <a href="https://www.cgd.ucar.edu/events/2019/ctsm/files/practical1-lombardozzi.pdf">practical 1</a> from the above mentioned 2019 CTSM tutorial.</p>
 <p>Once the new case is created, move into the newly created case directory. Within the case directory you will find the scripts to run the case setup (case.setup), build the model (script), and submit the case to the batch system (case.submit).</p>
 <pre class="bash"><code>cd /glade/work/katiem/SITS_cases/Rwe1_CLM50spinup_001</code></pre>
-<p>From here you will update some environmental variables for the case using the command xmlchange. These variables are specific to the machine (Cheyenne). For a list and more information on the variables you can search for, see <a href="http://www.cesm.ucar.edu/models/cesm2/settings/2.1.0/drv_input.html">this webpage</a>. I suggest bookmarking this page!</p>
+<p>From here you will update some environmental variables for the case using the command xmlchange. These variables are specific to the machine (Cheyenne). For a list and more information on the component and machine specific variables you can search for, see <a href="http://www.cesm.ucar.edu/models/cesm2/settings/2.1.0/drv_input.html">this webpage</a>. I suggest bookmarking this page!</p>
 <pre class="bash"><code>./xmlchange MPILIB=mpi-serial
 ./xmlchange --file env_mach_pes.xml --id COST_PES --val 36
 ./xmlchange --file env_mach_pes.xml --id TOTALPES --val 1
@@ -994,6 +994,7 @@ volumetric soil water through soil level at time t
 <p>Soil data from Reynold’s Mountain East was found at the <a href="https://doi.org/10.18122/B29T3T">link</a>.</p>
 <p>Soil data for other sites at RCEW can be found on hydroshare <a href="https://www.hydroshare.org/group/143">link</a>.</p>
 <p>Reynold’s Mountain East Ameriflux data <a href="https://ameriflux.lbl.gov/sites/siteinfo/US-Rwe">link</a></p>
+<p>Coverting Ameriflux data for use with CLM, from CLM4.5 User’s Guide <a href="https://www.cesm.ucar.edu/models/cesm1.2/clm/models/lnd/clm/doc/UsersGuide/x13434.html#AmeriFluxdata">link</a></p>
 <p>CESM information <a href="https://www.cesm.ucar.edu/">link</a></p>
 <p>CTSM information <a href="https://www.cesm.ucar.edu/models/cesm2/land/">link</a></p>
 <p>CLM information and overview <a href="https://www.cesm.ucar.edu/models/clm/">link</a></p>
@@ -1010,8 +1011,8 @@ volumetric soil water through soil level at time t
 <p>Useful module commands <a href="https://www2.cisl.ucar.edu/resources/computational-systems/cheyenne/user-environment/environment-modules#essential_cmds">link</a></p>
 <p>CESM compsets <a href="https://www.cesm.ucar.edu/models/cesm2/config/compsets.html">link</a>.</p>
 <p>CESM resolutions <a href="https://www.cesm.ucar.edu/models/cesm2/config/grids.html">link</a>.</p>
-<p>CESM component variables list and information <a href="http://www.cesm.ucar.edu/models/cesm2/settings/2.1.0/drv_input.html">link</a>.</p>
-<p>Coverting Ameriflux data, from CLM4.5 User’s Guide <a href="https://www.cesm.ucar.edu/models/cesm1.2/clm/models/lnd/clm/doc/UsersGuide/x13434.html#AmeriFluxdata">link</a></p>
+<p>CESM component variables list and information (also machine specific variables) <a href="http://www.cesm.ucar.edu/models/cesm2/settings/2.1.0/drv_input.html">link</a>.</p>
+<p>If you need to restart a simulation <a href="https://www.cesm.ucar.edu/models/cesm1.2/cesm/doc/usersguide/x1582.html#running_ccsm_restarts">link</a></p>
 </div>
 
 

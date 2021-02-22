@@ -354,7 +354,7 @@ Once the new case is created, move into the newly created case directory. Within
 cd /glade/work/katiem/SITS_cases/Rwe1_CLM50spinup_001
 ```
 
-From here you will update some environmental variables for the case using the command xmlchange. These variables are specific to the machine (Cheyenne). For a list and more information on the variables you can search for, see [this webpage](http://www.cesm.ucar.edu/models/cesm2/settings/2.1.0/drv_input.html). I suggest bookmarking this page!
+From here you will update some environmental variables for the case using the command xmlchange. These variables are specific to the machine (Cheyenne). For a list and more information on the component and machine specific variables you can search for, see [this webpage](http://www.cesm.ucar.edu/models/cesm2/settings/2.1.0/drv_input.html). I suggest bookmarking this page!
 
 ```{bash env_mach_pes, echo=TRUE, eval=FALSE}
 ./xmlchange MPILIB=mpi-serial
@@ -813,6 +813,8 @@ Soil data for other sites at RCEW can be found on hydroshare [link](https://www.
 
 Reynold's Mountain East Ameriflux data [link](https://ameriflux.lbl.gov/sites/siteinfo/US-Rwe)
 
+Coverting Ameriflux data for use with CLM, from CLM4.5 User's Guide  [link](https://www.cesm.ucar.edu/models/cesm1.2/clm/models/lnd/clm/doc/UsersGuide/x13434.html#AmeriFluxdata)
+
 CESM information [link](https://www.cesm.ucar.edu/)
 
 CTSM information [link](https://www.cesm.ucar.edu/models/cesm2/land/) 
@@ -840,8 +842,10 @@ CESM compsets [link](https://www.cesm.ucar.edu/models/cesm2/config/compsets.html
 
 CESM resolutions [link](https://www.cesm.ucar.edu/models/cesm2/config/grids.html).
 
-CESM component variables list and information [link](http://www.cesm.ucar.edu/models/cesm2/settings/2.1.0/drv_input.html).
+CESM component variables list and information (also machine specific variables) [link](http://www.cesm.ucar.edu/models/cesm2/settings/2.1.0/drv_input.html).
 
-Coverting Ameriflux data, from CLM4.5 User's Guide  [link](https://www.cesm.ucar.edu/models/cesm1.2/clm/models/lnd/clm/doc/UsersGuide/x13434.html#AmeriFluxdata)
+If you need to restart a simulation [link](https://www.cesm.ucar.edu/models/cesm1.2/cesm/doc/usersguide/x1582.html#running_ccsm_restarts)
+
+
 
 

@@ -241,6 +241,8 @@ Load a python 2 compatible miniconda environment (optional).
 
 ```{bash ptclm_py2, echo=TRUE, eval=FALSE}
 conda activate python2
+
+## If you do not have miniconda, then make sure to module load python/2
 ```
 
 After entering the qinteractive environment, you will need to reset environmental variables.
@@ -250,14 +252,22 @@ CTSMROOT=/glade/work/katiem/git/ctsm_rcew
 SITE=US-Rwe
 ```
 
-Next, run the PTCLMsublist, which will... 
+Next, run the PTCLMsublist
 ```{bash ptclm_sublist, echo=TRUE, eval=FALSE}
 ./PTCLMsublist -l $SITE -d $CSMDATA -o --verbose --account=UBOI0003 --mach=cheyenne
+
+## If you do not have miniconda, then make sure to module load python/2
+## When you run the PTCLM scripts make sure to have python in the command path
+# python PTCLMsublist -l $SITE -d $CSMDATA -o --verbose --account=UBOI0003 --mach=cheyenne
 ```
 
 PTCLMsublist will output a command to copy and paste into the terminal. It will look something like this...
 ```{bash ptclm_mkdata, echo=TRUE, eval=FALSE}
 ./PTCLMmkdata -s US-Rwe -d /glade/p/cesm/cseg/inputdata
+
+## If you do not have miniconda, then make sure to module load python/2
+## When you run the PTCLM scripts make sure to have python in the command path
+# python PTCLMmkdata -s US-Rwe -d /glade/p/cesm/cseg/inputdata
 ```
 
 What is this command doing? 
@@ -344,7 +354,7 @@ Once the new case is created, move into the newly created case directory. Within
 cd /glade/work/katiem/SITS_cases/Rwe1_CLM50spinup_001
 ```
 
-From here you will update some environmental variables for the case using the command xmlchange. These variables are specific to the machine (Cheyenne). For a list and more information on the variables you can search for, see [this webpage] (http://www.cesm.ucar.edu/models/cesm2/settings/2.1.0/drv_input.html). I suggest bookmarking this page!
+From here you will update some environmental variables for the case using the command xmlchange. These variables are specific to the machine (Cheyenne). For a list and more information on the variables you can search for, see [this webpage](http://www.cesm.ucar.edu/models/cesm2/settings/2.1.0/drv_input.html). I suggest bookmarking this page!
 
 ```{bash env_mach_pes, echo=TRUE, eval=FALSE}
 ./xmlchange MPILIB=mpi-serial
@@ -785,3 +795,42 @@ knitr::include_graphics("figures/ncview_03.png")
 
 ## 7. Useful References
 
+Here is a list of references from this technical note.
+
+Reynold's Creek Experimental Watershed (RCEW) as a part of the Critical Zone Observatory [link](https://czo-archive.criticalzone.org/reynolds/infrastructure/field-area/reynolds-creek-experimental-watershed/) 
+
+Information about available data and data access  [link](https://www.ars.usda.gov/pacific-west-area/boise-id/northwest-watershed-research-center/docs/reynolds-creek-experimental-watershed-data/).
+
+Soil data from Reynold's Mountain East was found at the [link](https://doi.org/10.18122/B29T3T).
+
+Soil data for other sites at RCEW can be found on hydroshare [link](https://www.hydroshare.org/group/143). 
+
+Reynold's Mountain East Ameriflux data [link](https://ameriflux.lbl.gov/sites/siteinfo/US-Rwe)
+
+CESM information [link](https://www.cesm.ucar.edu/)
+
+CTSM information [link](https://www.cesm.ucar.edu/models/cesm2/land/) 
+
+CLM information and overview [link](https://www.cesm.ucar.edu/models/clm/)
+
+CTSM 2019 Tutorial and Practicals [link](https://www.cgd.ucar.edu/events/2019/ctsm/) 
+
+CTSM github page [link](https://github.com/ESCOMP/CTSM/wiki/Model-Tutorials) 
+
+Techinal documentation for CLM version 5.0 [link](https://escomp.github.io/ctsm-docs/versions/release-clm5.0/html/tech_note/index.html).
+
+CLM5.0 User's Guide [link](https://escomp.github.io/ctsm-docs/versions/release-clm5.0/html/users_guide/index.html) 
+
+CLM4.5 User's Guide [link](https://www.cesm.ucar.edu/models/cesm1.2/clm/models/lnd/clm/doc/UsersGuide/f101.html)
+
+Cheyenne specific modules and software  [link](https://www2.cisl.ucar.edu/resources/computational-systems/cheyenne/software) 
+
+Useful module commands [link](https://www2.cisl.ucar.edu/resources/computational-systems/cheyenne/user-environment/environment-modules#essential_cmds)
+
+CESM compsets [link](https://www.cesm.ucar.edu/models/cesm2/config/compsets.html).
+
+CESM resolutions [link](https://www.cesm.ucar.edu/models/cesm2/config/grids.html).
+
+Cheyenne environment variables list and information [link](http://www.cesm.ucar.edu/models/cesm2/settings/2.1.0/drv_input.html).
+
+Coverting Ameriflux data, from CLM4.5 User's Guide  [link](https://www.cesm.ucar.edu/models/cesm1.2/clm/models/lnd/clm/doc/UsersGuide/x13434.html#AmeriFluxdata)

@@ -560,15 +560,25 @@ cd $CTSMROOT/tools/PTCLM
 <p>Once all of the modules are loaded, the tools are built, and the PTCLMmkdata script is updated, open up a qinteractive session in order to complete the map generation and file creation process. The process can take several hours, so I suggest setting the walltime to 6 hours.</p>
 <pre class="bash"><code>qinteractive -X -A UBOI0006 -l walltime=06:00:00</code></pre>
 <p>Load a python 2 compatible miniconda environment (optional).</p>
-<pre class="bash"><code>conda activate python2</code></pre>
+<pre class="bash"><code>conda activate python2
+
+## If you do not have miniconda, then make sure to module load python/2</code></pre>
 <p>After entering the qinteractive environment, you will need to reset environmental variables.</p>
 <pre class="bash"><code>CSMDATA=/glade/p/cesm/cseg/inputdata
 CTSMROOT=/glade/work/katiem/git/ctsm_rcew
 SITE=US-Rwe</code></pre>
-<p>Next, run the PTCLMsublist, which will…</p>
-<pre class="bash"><code>./PTCLMsublist -l $SITE -d $CSMDATA -o --verbose --account=UBOI0003 --mach=cheyenne</code></pre>
+<p>Next, run the PTCLMsublist</p>
+<pre class="bash"><code>./PTCLMsublist -l $SITE -d $CSMDATA -o --verbose --account=UBOI0003 --mach=cheyenne
+
+## If you do not have miniconda, then make sure to module load python/2
+## When you run the PTCLM scripts make sure to have python in the command path
+# python PTCLMsublist -l $SITE -d $CSMDATA -o --verbose --account=UBOI0003 --mach=cheyenne</code></pre>
 <p>PTCLMsublist will output a command to copy and paste into the terminal. It will look something like this…</p>
-<pre class="bash"><code>./PTCLMmkdata -s US-Rwe -d /glade/p/cesm/cseg/inputdata</code></pre>
+<pre class="bash"><code>./PTCLMmkdata -s US-Rwe -d /glade/p/cesm/cseg/inputdata
+
+## If you do not have miniconda, then make sure to module load python/2
+## When you run the PTCLM scripts make sure to have python in the command path
+# python PTCLMmkdata -s US-Rwe -d /glade/p/cesm/cseg/inputdata</code></pre>
 <p>What is this command doing? For more information on the PTCLMmkdata script see the README file here: $CTSMROOT/tools/PTCLM/</p>
 <p>Basically, PTCLMmkdata is a python script that runs through the process of creating the surface data files for a single point. In this case the single point is an Ameriflux tower site.</p>
 <p>Again, this process can take a long time. You may need to run this command multiple times. However, once the mapping files are created they will be skipped over if you have to rerun the PTCLMmkdata command.</p>
@@ -620,7 +630,7 @@ SITE=US-Rwe</code></pre>
 <p>More information can be found in <a href="https://www.cgd.ucar.edu/events/2019/ctsm/files/practical1-lombardozzi.pdf">practical 1</a> from the above mentioned 2019 CTSM tutorial.</p>
 <p>Once the new case is created, move into the newly created case directory. Within the case directory you will find the scripts to run the case setup (case.setup), build the model (script), and submit the case to the batch system (case.submit).</p>
 <pre class="bash"><code>cd /glade/work/katiem/SITS_cases/Rwe1_CLM50spinup_001</code></pre>
-<p>From here you will update some environmental variables for the case using the command xmlchange. These variables are specific to the machine (Cheyenne). For a list and more information on the variables you can search for, see [this webpage] (<a href="http://www.cesm.ucar.edu/models/cesm2/settings/2.1.0/drv_input.html" class="uri">http://www.cesm.ucar.edu/models/cesm2/settings/2.1.0/drv_input.html</a>). I suggest bookmarking this page!</p>
+<p>From here you will update some environmental variables for the case using the command xmlchange. These variables are specific to the machine (Cheyenne). For a list and more information on the variables you can search for, see <a href="http://www.cesm.ucar.edu/models/cesm2/settings/2.1.0/drv_input.html">this webpage</a>. I suggest bookmarking this page!</p>
 <pre class="bash"><code>./xmlchange MPILIB=mpi-serial
 ./xmlchange --file env_mach_pes.xml --id COST_PES --val 36
 ./xmlchange --file env_mach_pes.xml --id TOTALPES --val 1
@@ -970,6 +980,26 @@ volumetric soil water through soil level at time t
 </div>
 <div id="useful-references" class="section level2">
 <h2>7. Useful References</h2>
+<p>Here is a list of references from this technical note.</p>
+<p>Reynold’s Creek Experimental Watershed (RCES) as a part of the Critical Zone Observatory <a href="https://czo-archive.criticalzone.org/reynolds/infrastructure/field-area/reynolds-creek-experimental-watershed/">link</a></p>
+<p>Information about available data and data access <a href="https://www.ars.usda.gov/pacific-west-area/boise-id/northwest-watershed-research-center/docs/reynolds-creek-experimental-watershed-data/">link</a>.</p>
+<p>Soil data from Reynold’s Mountain East was found at the <a href="https://doi.org/10.18122/B29T3T">link</a>.</p>
+<p>Soil data for other sites at RCEW can be found on hydroshare <a href="https://www.hydroshare.org/group/143">link</a>.</p>
+<p>Reynold’s Mountain East Ameriflux data <a href="https://ameriflux.lbl.gov/sites/siteinfo/US-Rwe">link</a></p>
+<p>CESM information <a href="https://www.cesm.ucar.edu/">link</a></p>
+<p>CTSM information <a href="https://www.cesm.ucar.edu/models/cesm2/land/">link</a></p>
+<p>CLM information and overview <a href="https://www.cesm.ucar.edu/models/clm/">link</a></p>
+<p>CTSM 2019 Tutorial and Practicals <a href="https://www.cgd.ucar.edu/events/2019/ctsm/">link</a></p>
+<p>CTSM github page <a href="https://github.com/ESCOMP/CTSM/wiki/Model-Tutorials">link</a></p>
+<p>Techinal documentation for CLM version 5.0 <a href="https://escomp.github.io/ctsm-docs/versions/release-clm5.0/html/tech_note/index.html">link</a>.</p>
+<p>CLM5.0 User’s Guide <a href="https://escomp.github.io/ctsm-docs/versions/release-clm5.0/html/users_guide/index.html">link</a></p>
+<p>CLM4.5 User’s Guide <a href="https://www.cesm.ucar.edu/models/cesm1.2/clm/models/lnd/clm/doc/UsersGuide/f101.html">link</a></p>
+<p>Cheyenne specific modules and software <a href="https://www2.cisl.ucar.edu/resources/computational-systems/cheyenne/software">link</a></p>
+<p>Useful module commands <a href="https://www2.cisl.ucar.edu/resources/computational-systems/cheyenne/user-environment/environment-modules#essential_cmds">link</a></p>
+<p>CESM compsets <a href="https://www.cesm.ucar.edu/models/cesm2/config/compsets.html">link</a>.</p>
+<p>CESM resolutions <a href="https://www.cesm.ucar.edu/models/cesm2/config/grids.html">link</a>.</p>
+<p>Cheyenne environment variables list and information <a href="http://www.cesm.ucar.edu/models/cesm2/settings/2.1.0/drv_input.html">link</a>.</p>
+<p>Coverting Ameriflux data, from CLM4.5 User’s Guide <a href="https://www.cesm.ucar.edu/models/cesm1.2/clm/models/lnd/clm/doc/UsersGuide/x13434.html#AmeriFluxdata">link</a></p>
 </div>
 
 

@@ -808,7 +808,7 @@ echo &quot;use_init_interp = .true.&quot; &gt;&gt; user_nl_clm</code></pre>
 <p>As a reminder, you should still be in the case directory /glade/work/katiem/SITS_cases/Rwe1_CLM50postspin001</p>
 <pre class="bash"><code># after 1901 make these changes (I&#39;m assuming in case directory)
 ./xmlchange STOP_OPTION=nyears
-./xmlchange STOP_N=22
+./xmlchange STOP_N=20
 ./xmlchange DATM_CLMNCEP_YR_ALIGN=1901
 ./xmlchange DATM_CLMNCEP_YR_START=1901
 ./xmlchange DATM_CLMNCEP_YR_END=2014
@@ -820,12 +820,12 @@ echo &quot;use_init_interp = .true.&quot; &gt;&gt; user_nl_clm</code></pre>
 <pre class="bash"><code>## cd into the case run directory on scratch
 cd /glade/scratch/katiem/Rwe1_CLM50postsp_001/run
 ## remove the bin file
-rm Rwe1_CLM50postsp_001.datm.rs1.1901-01-01-00000.bin</code></pre>
+rm Rwe1_CLM50postspin001.datm.rs1.1901-01-01-00000.bin</code></pre>
 </div>
 <div id="rebuild-the-model-and-submit-case" class="section level4">
 <h4>4.2.9 Rebuild the Model and Submit case</h4>
 <pre class="bash"><code>
-cd /glade/work/katiem/SITS_cases/Rwe1_CLM50postsp_001
+cd /glade/work/katiem/SITS_cases/Rwe1_CLM50postspin001
 
 qcmd -- ./case.build
 
@@ -837,11 +837,11 @@ qcmd -- ./case.build
 </div>
 <div id="setting-up-and-running-a-case" class="section level2">
 <h2>5. Setting Up and Running a Case</h2>
+<p>Now that you’ve run through a historic run (which, I’m sorry to say, is optional after the spin up), you can work on a new simulation where you could potentially test hypotheses in the future. The general steps are similar to the historic run, but with minor changes.</p>
 <p>General Steps:</p>
 <ol style="list-style-type: decimal">
-<li>Create new case or clone</li>
-<li>Go to newly created case directory</li>
-<li>./xmlchanges</li>
+<li>Clone the historic case and move to cloned case directory</li>
+<li>./xmlchanges before running case.setup</li>
 <li>case.setup –reset</li>
 <li>./xmlchanges and nl changes</li>
 <li>Build the case</li>
@@ -849,10 +849,81 @@ qcmd -- ./case.build
 <li>Copy over the archive output files</li>
 <li>Submit the case</li>
 </ol>
+<div id="clone-the-historic-case" class="section level4">
+<h4>5.1 Clone the Historic Case</h4>
+<p>Cloning is fairly straight forward, and is similar to creating a new case. The res and compset arguments are not needed. The case argument is for the new (cloned) case. The clone argument is the path to the case being cloned.</p>
+<pre class="bash"><code>## Change to the cime scripts directory
+cd /glade/work/katiem/git/ctsm_sits/cime/scripts/
+
+## Creat the clone
+./create_clone --case /glade/work/katiem/SITS_cases/Rwe1_CLM50_clone --clone /glade/work/katiem/SITS_cases/Rwe1_CLM50postspin001 --project UBOI0003
+
+## Move into the cloned case directory
+cd /glade/work/katiem/SITS_cases/Rwe1_CLM50_clone</code></pre>
+</div>
+<div id="xmlchanges-before-running-case.setup-1" class="section level4">
+<h4>5.2 ./xmlchanges before running case.setup</h4>
+<pre class="bash"><code>./xmlchange MPILIB=mpi-serial
+./xmlchange --file env_mach_pes.xml --id COST_PES --val 36
+./xmlchange --file env_mach_pes.xml --id TOTALPES --val 1
+./xmlchange --file env_mach_pes.xml --id NTASKS --val 1
+./xmlchange --file env_mach_pes.xml --id NTASKS_PER_INST --val 1
+./xmlchange --file env_mach_pes.xml --id ROOTPE --val 0
+./xmlchange JOB_WALLCLOCK_TIME=08:00:00 # May cause an ERROR
+./xmlchange JOB_QUEUE=regular # May cause an ERROR</code></pre>
+</div>
+<div id="case.setup-reset" class="section level4">
+<h4>5.3 case.setup –reset</h4>
+<p>Why run the reset argument?</p>
+<pre class="bash"><code>./case.setup --reset</code></pre>
+</div>
+<div id="more-.xmlchanges-and-namelistl-changes" class="section level4">
+<h4>5.4 More ./xmlchanges and namelistl changes</h4>
+<pre class="bash"><code># Complete xml changes and nl changes for history output.
+./xmlchange RUN_TYPE=branch
+./xmlchange RUN_REFCASE=Rwe1_CLM50histsp_1980_001
+./xmlchange RUN_REFDATE=1981-01-01
+./xmlchange STOP_OPTION=nyears
+./xmlchange STOP_N=10
+./xmlchange CONTINUE_RUN=FALSE
+./xmlchange RESUBMIT=12
+./xmlchange DATM_CLMNCEP_YR_ALIGN=1980
+./xmlchange DATM_CLMNCEP_YR_START=1980
+./xmlchange DATM_CLMNCEP_YR_END=2009
+
+# Change history output to be monthly
+echo &quot;hist_mfilt = 12&quot; &gt;&gt; user_nl_clm </code></pre>
+</div>
+<div id="build-the-case" class="section level4">
+<h4>5.5 Build the case</h4>
+</div>
+<div id="copy-over-the-rpointer-and-case-files-from-the-original-case" class="section level4">
+<h4>5.6 Copy over the rpointer and case files from the original case</h4>
+</div>
+<div id="copy-over-the-archive-output-files" class="section level4">
+<h4>5.7 Copy over the archive output files</h4>
+</div>
+<div id="submit-the-case-1" class="section level4">
+<h4>5.8 Submit the case</h4>
+</div>
 </div>
 <div id="model-outputs" class="section level2">
 <h2>6. Model Outputs</h2>
-<p>As noted in the above sections, model output lives in the</p>
+<p>As noted in the above sections, model output (i.e. history files) are located in the scratch archive. Reviewing and visualizing model output is out of scope for this technical note, but you can use the ncview module for quick visualization.</p>
+<pre class="bash"><code>## Change to the history output directory
+cd /glade/scratch/katiem/archive/Rwe1_CLM50postsp_001/lnd/hist
+
+## Check that you have ncview loaded
+module list
+
+## If not, load ncview
+module load ncview
+
+## Next, look at the output. Use the * to open all .nc files in ncview
+
+ncview Rwe1_CLM50postsp_001*.nc</code></pre>
+<p>The user interface allows one to quickly view a specific output.</p>
+<p><insert screen shots of ncview></p>
 </div>
 <div id="useful-references" class="section level2">
 <h2>7. Useful References</h2>

@@ -177,14 +177,15 @@ Plant data was inferred from the Ameriflux site description [here](https://ameri
 
 The list of pft indexes (or patch types) can be found [here](https://github.com/ESCOMP/CTSM/blob/master/src/main/PatchType.F90):
 
-Make a table of pfts with the acronym and index #
 ```{r pft_table, echo=FALSE, eval=TRUE}
 dt <- read.csv('PFT_index.csv')
 
 dt %>%
-  kbl() %>%
-  kable_styling()
-
+  kbl(caption = "Plant functional type (PFT) Index", 
+      col.names = c("Long Name",
+                    "PFT Index")) %>%
+  kable_paper() %>% 
+  scroll_box(width = "400px", height = "300px")
 ```
 
 

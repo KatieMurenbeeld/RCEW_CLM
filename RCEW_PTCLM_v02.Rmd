@@ -17,11 +17,11 @@ library(kableExtra)
 
 The purpose of this technical note is to familiarize a LEAF lab user (or any user) with setting up and running a single point climate simulation at the Reynold's Creek Experimental Watershed (RCEW) using the Community Terrestrial Systems Model (CTSM) with standard climate forcing data or meterological data from one of the AmeriFlux towers on the site. 
 
-In this document, I am assuming that you have a small or large allocation on the National Center for Atmospheric Research's (NCAR) supercomputer Cheyenne. At this time CLM is not ported on the high performance computers (HPC), R2 and Borah, at Boise State, but this is a goal to complete soon. For this note, I am also assuming users have an active NCAR project code, a conversational knowledge of a shell type language (bash, sh, csh, tsh, etc.), can use a text editor such as vim or emacs, and a basic understanding of git and github. 
+In this document, I am assuming that you have a small or large allocation on the National Center for Atmospheric Research's (NCAR) supercomputer Cheyenne. At this time CTSM is not ported on the high performance computers (HPC), R2 and Borah, at Boise State. For this note, I am also assuming users have an active NCAR project code, a conversational knowledge of a **shell type language** (bash, sh, csh, tsh, etc.), can use a **text editor such as vim or emacs**, and a basic understanding of **git and github**. 
 
 The genreal outline of this technical note will be as followes:
 
-* First, a little background on Reynold's Creek and CESM.
+* Section1: A little background on Reynold's Creek and CESM.
 * Section 2: Setting up the file structure on Cheyenne and cloning CTSM
 * Section 3: Running Point CLM (PTCLM) make tools to generate the single point surfacedata files needed for running simulations at the tower site of choice.
 * Section 4: Running an accelerated spin up for thw tower site.
@@ -31,19 +31,19 @@ The genreal outline of this technical note will be as followes:
 
 ### 1.1 Reynold's Creek Experimental Watershed
 
-Reynold's Creek Experimental Watershed (RCEW), located in southwestern Idaho, was established in 1960 to serve as an "outdoor hydrological laboratory". The RCEW is now a part of the Critical Zone Observatory (CZO). Climate and soil data from RCEW is regularly collected, publically avaiable, and is useful for understanding the dynmaincs of the water, energy, and nutrient cycles of the Great Basin as well as the Interior Pacific Northwest. 
-
-More information on RCEW as a part of the CZO can be found [here](https://czo-archive.criticalzone.org/reynolds/infrastructure/field-area/reynolds-creek-experimental-watershed/) and information about available data and data access can be found [here](https://www.ars.usda.gov/pacific-west-area/boise-id/northwest-watershed-research-center/docs/reynolds-creek-experimental-watershed-data/).
+Reynold's Creek Experimental Watershed (RCEW), located in southwestern Idaho, was established in 1960 to serve as an "outdoor hydrological laboratory". The RCEW is now a part of the Critical Zone Observatory (CZO). Climate and soil data from RCEW is regularly collected, publically available, and is useful for understanding the dynmaincs of the water, energy, and nutrient cycles of the Great Basin as well as the Interior Pacific Northwest. 
 
 ```{r clm_fig01, echo=FALSE, eval=TRUE, fig.cap="The Eddy covariance tower at Reynold's Mountain East"}
 knitr::include_graphics("figures/ReyMtn4_900_675_80auto.jpg")
 ```
 
+More information on RCEW as a part of the CZO can be found [here](https://czo-archive.criticalzone.org/reynolds/infrastructure/field-area/reynolds-creek-experimental-watershed/) and information about available data and data access can be found [here](https://www.ars.usda.gov/pacific-west-area/boise-id/northwest-watershed-research-center/docs/reynolds-creek-experimental-watershed-data/).
+
 ### 1.2 The Community Earth Systems Model (CESM) and the Community Terrestrial Systems Model (CTSM)
 
-The Community Earth Systems Model [CESM](https://www.cesm.ucar.edu/) was created at NCAR in 1983 and has been in use with continual updates ever since. CESM is a global atmosphere model developed to understand and predict Earth's climate. More history about the development of CESM can be found [here](https://www.cesm.ucar.edu/about/?ref=hp).
+The Community Earth Systems Model [CESM](https://www.cesm.ucar.edu/) was created at NCAR in 1983 and has been in use (with continual updates) ever since. CESM is a global atmosphere model developed to understand and predict Earth's climate. More history about the development of CESM can be found [here](https://www.cesm.ucar.edu/about/?ref=hp).
 
-The Community Terrestrial Systems Model [CTSM](https://www.cesm.ucar.edu/models/cesm2/land/) or [CLM](https://www.cesm.ucar.edu/models/clm/) is the land model componentof the CESM. Often, one may see or hear CTSM refered to as CLM (Community Land Model). Technically, CLM is a specific component to the CTSM, but the terms are often used interchangably. CLM is used for examining the biophysical and biogeochemical processes of the Earth's terrestrial systems. CLM contains various submodel options such as the as the river routing or the dynamic vegetation components. I highly recommend the [overview]() as well as some of the powerpoints and [tutorials](https://www.cgd.ucar.edu/events/2019/ctsm/) from the [github page](https://github.com/ESCOMP/CTSM/wiki/Model-Tutorials) for a more in depth overview. Additionally, the techinal documentation for CLM version 5.0 can be found [here](https://escomp.github.io/ctsm-docs/versions/release-clm5.0/html/tech_note/index.html).
+The Community Terrestrial Systems Model [CTSM](https://www.cesm.ucar.edu/models/cesm2/land/) (or [CLM](https://www.cesm.ucar.edu/models/clm/)) is the land model componentof the CESM. Often, one may see or hear CTSM refered to as CLM (Community Land Model). Technically, CLM is a specific component of the CTSM, but the terms are often used interchangably. CLM is used for examining the biophysical and biogeochemical processes of the Earth's terrestrial systems. CLM contains various submodel options such as different river routing schemes or dynamic vegetation components. I highly recommend the [overview](https://www.cesm.ucar.edu/models/clm/) as well as some of the powerpoints and [tutorials](https://www.cgd.ucar.edu/events/2019/ctsm/) from the [github page](https://github.com/ESCOMP/CTSM/wiki/Model-Tutorials) for a more in depth overview. Additionally, the techinal documentation for CLM version 5.0 can be found [here](https://escomp.github.io/ctsm-docs/versions/release-clm5.0/html/tech_note/index.html).
 
 Instructions for this tech note have been edited and aggregated from the [CLM5.0 User's guide](https://escomp.github.io/ctsm-docs/versions/release-clm5.0/html/users_guide/index.html) specifically section 1.7 and the [CLM4.5 User's Guide](https://www.cesm.ucar.edu/models/cesm1.2/clm/models/lnd/clm/doc/UsersGuide/f101.html), specifically Chapter 5.  
 
@@ -85,7 +85,7 @@ git checkout -b ctsm_rcew
 ls   
 ```
 
-Notice that there is a folder within your project direcotry named manage_externals. This contains a very important script, checkout_externals, which downloads all of the components required for building and running CTSM. These include: CLM (land model component), CISM (sea-ice component), RTM (river routing component), MOSART (river routing component), CIME (contains scripts and tools for running CESM), CMEPS (Earth prediction option of CIME), FATES (dynamic vegetation option of CLM), and PTCLM (point simulation option of CLM). More information about checkout_externals can be found in the README_EXTERNALS.rst file in your project folder. 
+Notice that there is a folder within your project directory named manage_externals. This contains a very important script, checkout_externals, which downloads all of the components required for building and running CTSM. These include: CLM (land model component), CISM (sea-ice component), RTM (river routing component), MOSART (river routing component), CIME (contains scripts and tools for running CESM), CMEPS (Earth prediction option of CIME), FATES (dynamic vegetation option of CLM), and PTCLM (point simulation option of CLM). More information about checkout_externals can be found in the README_EXTERNALS.rst file in your project folder. 
 
 To checkout the externals:
 
@@ -106,7 +106,7 @@ ls
 
 ## 3. Set Up for Point Simulations (PTCLM)
 
-The **P**oin**T** **CLM** runs through the steps for creating single point domain and surface data files (link to html for single point and region surface data file generation). PTCLM is a simpler way to create these files specifically for Ameriflux tower sites. The file PTCLMmkdata runs the tools to get datasets set up, and copies them to a location you can use, including the changes needed for a case to use the dataset with namelist and XML changes. There are a few steps you will need to take before you can run the PTCLMmkdata script. For more information on the PTCLMmkdata script see the README file here: 
+The **P**oin**T** **CLM** runs through the steps for creating single point domain and surface data files which are described in [Section 1.6.3.5 of the CLM5.0 User's Guide](https://escomp.github.io/ctsm-docs/versions/release-clm5.0/html/users_guide/running-single-points/running-single-point-configurations.html#example-creating-a-surface-dataset-for-a-single-point) and [Chapter 2 of the CLM4.5 User's Guide](https://www.cesm.ucar.edu/models/cesm1.2/clm/models/lnd/clm/doc/UsersGuide/c11242.html). PTCLM is a simpler way to create these files specifically for Ameriflux tower sites. The file PTCLMmkdata runs the tools to get datasets set up, and copies them to a location you can use, including the changes needed for a case to use the dataset with namelist and XML changes. There are a few steps you will need to take before you can run the PTCLMmkdata script. For more information on the PTCLMmkdata script see the README file here: 
 $CTSMROOT/tools/PTCLM/
 
 *Note* you will setup the **CTSMROOT** in the next code block. 
@@ -138,7 +138,7 @@ The **PTCLMDATA_sitedata.txt** contains the following (comma separated) headers:
 * **timestep**: timestep that data is collected (minutes)
 * **campaign**: funding for the site, for example AmeriFlux, Fluxnet-Canada, etc.
 
-For RCEW we will be using the Reynolds Mountain East tower site ([site description](https://ameriflux.lbl.gov/sites/siteinfo/US-Rwe)), so the following information can be added to the **PTCLMDATA_sitedata.txt** using your text editor of choice (I use vim). In general, the site data for each specific tower can be found from the ameriflux.lbl.gov/sites/siteinfo/your-site website. 
+For RCEW we will be using the Reynolds Mountain East tower site ([site description](https://ameriflux.lbl.gov/sites/siteinfo/US-Rwe)), so the following information can be added to the **PTCLMDATA_sitedata.txt** using your text editor of choice (I use vim). In general, the site data for each specific tower can be found from the ameriflux.lbl.gov/sites/siteinfo/**your-site** website. 
 
 US-Rwe,"RCEW Reynolds Mountain East",ID,-116.7591023,43.0653469,2098,2003,2007,2003,30,AmeriFlux
 
@@ -153,7 +153,7 @@ The **PTCLMDATA_soildata.txt** contains the following (comma separated) headers:
 
 Soil data from Reynold's Mountain East was found at the [Dataset for Soil properties of Reynolds Mountain East a subcatchment of Reynolds Creek, Idaho ](https://doi.org/10.18122/B29T3T). For this instance I averaged the sand and clay contents. Soil data for other sites at RCEW can be found at the  [hydroshare website](https://www.hydroshare.org/group/143). 
 
-Add the following information can be added to the **PTCLMDATA_soildata.txt** using your text editor:
+Add the following information to the **PTCLMDATA_soildata.txt** using your text editor:
 
 US-Rwe,-999,1,-999,36.32,20.92
 
@@ -169,7 +169,7 @@ site_code,pft_f1,pft_c1,pft_f2,pft_c2,pft_f3,pft_c3,pft_f4,pft_c4,pft_f5,pft_c5
 * **pft_c1-5**: the index number of a plant functional type, currently PTCLM only supports up to 5 pfts at a site.
 * **pft_f1-5**: the fraction (as a percent) of the site covered by the pft
 
-Add the following information can be added to the **PTCLMDATA_pftdata.txt** using your text editor:
+Add the following information to the **PTCLMDATA_pftdata.txt** using your text editor:
 
 US-Rwe,100,9,0,0,0,0,0,0,0,0
 
@@ -192,7 +192,7 @@ dt %>%
 ### 3.2 Loading Modules
 Modules are software environments for use on Cheyenne. Information on Cheyenne specific modules and software can be found [here](https://www2.cisl.ucar.edu/resources/computational-systems/cheyenne/software) and useful module commands [here](https://www2.cisl.ucar.edu/resources/computational-systems/cheyenne/user-environment/environment-modules#essential_cmds).
 
-You will need to load the appropriate modules in a specific order because some modules are dependent on others, for example a compiler module often needs to be loaded before some of the NCAR specific software modules. 
+You will need to load the appropriate modules in a specific order because some modules are dependent on others. For example, a compiler module often needs to be loaded before some of the NCAR specific software modules. 
 
 **NOTE** Depending on if you use miniconda you may or may mot need to load all of the modules if they are already in the miniconda environment. For example, here I do not *module load python/2* because I will activate a python 2 miniconda environment later.
 
@@ -224,7 +224,7 @@ module load ncview/2.1.7
 
 ### 3.3 Running PTCLMmkdata 
 
-Change directory to the PTCLM folder. From there execute the buildtools script. Buildtools will...
+Change directory to the PTCLM folder. From there execute the buildtools script.
 
 ```{bash ptcml_folder, echo=TRUE, eval=FALSE}
 CTSMROOT=/glade/work/katiem/git/ctsm_rcew
@@ -232,7 +232,7 @@ cd $CTSMROOT/tools/PTCLM
 ./buildtools
 
 ## Should see this text.
-## Successfully built CLM tools needed to create datasets for PTCLM
+Successfully built CLM tools needed to create datasets for PTCLM
 ```
 
 There is a known issue within the PTCLMmkdata code which will need to be addressed before you can continue on with the process. Use the text editor of your choice to open PTCLMmkdata. In line 552 you will need to remove the "export" command.
@@ -243,6 +243,12 @@ There is a known issue within the PTCLMmkdata code which will need to be address
 ```
 
 Once all of the modules are loaded, the tools are built, and the PTCLMmkdata script is updated, open up a qinteractive session in order to complete the map generation and file creation process. The process can take several hours, so I suggest setting the walltime to 6 hours.
+
+The -X argument is is to make sure tha X11 forwarding. 
+
+*Note on X11 forwarding*: when you log onto Cheyenne you will have logged on with either -X (Windows) or -Y (Mac) to allows a remotely started application to show up on a local machine, i.e. X11 forwarding. 
+
+The -A argument allows you to set your project number (in my case UBOI0006).
 
 ```{bash ptcml_qint, echo=TRUE, eval=FALSE}
 qinteractive -X -A UBOI0006 -l walltime=06:00:00

@@ -843,6 +843,8 @@ CTSM information [link](https://www.cesm.ucar.edu/models/cesm2/land/)
 
 CLM information and overview [link](https://www.cesm.ucar.edu/models/clm/)
 
+CLM5.0 README [link](https://escomp.github.io/ctsm-docs/versions/release-clm5.0/html/users_guide/overview/introduction.html?highlight=resubmit#readme-file-describing-version)
+
 CTSM 2019 Tutorial and Practicals [link](https://www.cgd.ucar.edu/events/2019/ctsm/) 
 
 - Practical 1 for an introduction to running CLM simulations on Cheyenne [link](https://www.cgd.ucar.edu/events/2019/ctsm/files/practical1-lombardozzi.pdf) 

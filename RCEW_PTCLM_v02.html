@@ -712,7 +712,7 @@ cd $CTSMROOT/tools/PTCLM/PTCLM_sitedata</code></pre>
 <li><strong>timestep</strong>: timestep that data is collected (minutes)</li>
 <li><strong>campaign</strong>: funding for the site, for example AmeriFlux, Fluxnet-Canada, etc.</li>
 </ul>
-<p>For RCEW we will be using the Reynolds Mountain East tower site (<a href="https://ameriflux.lbl.gov/sites/siteinfo/US-Rwe">site description</a>), so the following information can be added to the <strong>PTCLMDATA_sitedata.txt</strong> using your text editor of choice (I use vim). In general, the site data for each specific tower can be found from the ameriflux.lbl.gov/sites/siteinfo/your-site website.</p>
+<p>For RCEW we will be using the Reynolds Mountain East tower site (<a href="https://ameriflux.lbl.gov/sites/siteinfo/US-Rwe">site description</a>), so the following information can be added to the <strong>PTCLMDATA_sitedata.txt</strong> using your text editor of choice (I use vim). In general, the site data for each specific tower can be found from the ameriflux.lbl.gov/sites/siteinfo/<strong>your-site</strong> website.</p>
 <p>US-Rwe,“RCEW Reynolds Mountain East”,ID,-116.7591023,43.0653469,2098,2003,2007,2003,30,AmeriFlux</p>
 <p>The <strong>PTCLMDATA_soildata.txt</strong> contains the following (comma separated) headers: site_code,soil_depth,n_layers,layer_depth,layer_sand%,layer_clay%</p>
 <ul>
@@ -724,7 +724,7 @@ cd $CTSMROOT/tools/PTCLM/PTCLM_sitedata</code></pre>
 <li><strong>layer_clay%</strong>: percent clay, used to set the soil texture</li>
 </ul>
 <p>Soil data from Reynold’s Mountain East was found at the <a href="https://doi.org/10.18122/B29T3T">Dataset for Soil properties of Reynolds Mountain East a subcatchment of Reynolds Creek, Idaho</a>. For this instance I averaged the sand and clay contents. Soil data for other sites at RCEW can be found at the <a href="https://www.hydroshare.org/group/143">hydroshare website</a>.</p>
-<p>Add the following information can be added to the <strong>PTCLMDATA_soildata.txt</strong> using your text editor:</p>
+<p>Add the following information to the <strong>PTCLMDATA_soildata.txt</strong> using your text editor:</p>
 <p>US-Rwe,-999,1,-999,36.32,20.92</p>
 <p>Within CLM the soil texture (percent sand and clay) is used to determine the soil’s thermal and hydraulic properties (see the CLM tech note chapter 6.3 <a href="https://escomp.github.io/ctsm-docs/versions/release-clm5.0/html/tech_note/Soil_Snow_Temperatures/CLM50_Tech_Note_Soil_Snow_Temperatures.html#soil-and-snow-thermal-properties">Soil and Snow Thermal Properties</a> and chapter 7 <a href="https://escomp.github.io/ctsm-docs/versions/release-clm5.0/html/tech_note/Hydrology/CLM50_Tech_Note_Hydrology.html#">Hydrology</a>.</p>
 <p><em>Advanced Note:</em> Soil texture data (%sand, %clay) is very important because the mineral soil hydraulic properties are calculated using only the Clapp-Hornberg formulation, which uses the %sand to determine saturated hydraulic conductivity. The specific Fortran code can be found in the <a href="https://github.com/ESCOMP/CTSM/blob/master/src/main/FuncPedotransferMod.F90">FuncPedotranserMod.F90</a>. The outputs from this FuncPedotranserMod.F90 are called into other submodules of the CTSM/CLM code, specifically the <a href="https://github.com/ESCOMP/CTSM/blob/master/src/biogeophys/SoilStateInitTimeConstMod.F90">SoilStateInitTimeConst.F90</a>. All of this is quite a rabbit-hole to fall down, but if you want a better understanding of the model as a whole, read the above referenced chapters of the CLM tech note and have a look at the Soil*.F90 code on <a href="https://github.com/ESCOMP/CTSM/tree/master/src/biogeophys">github</a>.</p>
@@ -734,7 +734,7 @@ cd $CTSMROOT/tools/PTCLM/PTCLM_sitedata</code></pre>
 <li><strong>pft_c1-5</strong>: the index number of a plant functional type, currently PTCLM only supports up to 5 pfts at a site.</li>
 <li><strong>pft_f1-5</strong>: the fraction (as a percent) of the site covered by the pft</li>
 </ul>
-<p>Add the following information can be added to the <strong>PTCLMDATA_pftdata.txt</strong> using your text editor:</p>
+<p>Add the following information to the <strong>PTCLMDATA_pftdata.txt</strong> using your text editor:</p>
 <p>US-Rwe,100,9,0,0,0,0,0,0,0,0</p>
 <p>Plant data was inferred from the Ameriflux site description <a href="https://ameriflux.lbl.gov/sites/siteinfo/US-Rwe">here</a>.</p>
 <p>The list of pft indexes (or patch types) can be found <a href="https://github.com/ESCOMP/CTSM/blob/master/src/main/PatchType.F90">here</a>:</p>
@@ -897,7 +897,7 @@ c3 irrigated
 <div id="loading-modules" class="section level3">
 <h3>3.2 Loading Modules</h3>
 <p>Modules are software environments for use on Cheyenne. Information on Cheyenne specific modules and software can be found <a href="https://www2.cisl.ucar.edu/resources/computational-systems/cheyenne/software">here</a> and useful module commands <a href="https://www2.cisl.ucar.edu/resources/computational-systems/cheyenne/user-environment/environment-modules#essential_cmds">here</a>.</p>
-<p>You will need to load the appropriate modules in a specific order because some modules are dependent on others, for example a compiler module often needs to be loaded before some of the NCAR specific software modules.</p>
+<p>You will need to load the appropriate modules in a specific order because some modules are dependent on others. For example, a compiler module often needs to be loaded before some of the NCAR specific software modules.</p>
 <p><strong>NOTE</strong> Depending on if you use miniconda you may or may mot need to load all of the modules if they are already in the miniconda environment. For example, here I do not <em>module load python/2</em> because I will activate a python 2 miniconda environment later.</p>
 <p>Modules:</p>
 <ul>
@@ -925,25 +925,33 @@ module load ncview/2.1.7
 </div>
 <div id="running-ptclmmkdata" class="section level3">
 <h3>3.3 Running PTCLMmkdata</h3>
-<p>Change directory to the PTCLM folder. From there execute the buildtools script. Buildtools will…</p>
+<p>Change directory to the PTCLM folder. From there execute the buildtools script.</p>
 <pre class="bash"><code>CTSMROOT=/glade/work/katiem/git/ctsm_rcew
 cd $CTSMROOT/tools/PTCLM
 ./buildtools
 
 ## Should see this text.
-## Successfully built CLM tools needed to create datasets for PTCLM</code></pre>
+Successfully built CLM tools needed to create datasets for PTCLM</code></pre>
 <p>There is a known issue within the PTCLMmkdata code which will need to be addressed before you can continue on with the process. Use the text editor of your choice to open PTCLMmkdata. In line 552 you will need to remove the “export” command.</p>
 <pre class="bash"><code>- cmd = &quot;export REGRID_PROC=1; &quot;+mkmapdat_dir+&quot;/mkmapdata.sh --gridfile &quot;+scripgridfile+&quot; --res &quot;+clmres+&quot; --gridtype regional -v &gt; &quot;+mapdir+&quot;/mkmapdata.log&quot;;
 + cmd = mkmapdat_dir+&quot;/mkmapdata.sh --gridfile &quot;+scripgridfile+&quot; --res &quot;+clmres+&quot; --gridtype regional -v &gt; &quot;+mapdir+&quot;/mkmapdata.log&quot;;</code></pre>
 <p>Once all of the modules are loaded, the tools are built, and the PTCLMmkdata script is updated, open up a qinteractive session in order to complete the map generation and file creation process. The process can take several hours, so I suggest setting the walltime to 6 hours.</p>
+<p>The -X argument is is to make sure tha X11 forwarding.</p>
+<p><em>Note on X11 forwarding</em>: when you log onto Cheyenne you will have logged on with either -X (Windows) or -Y (Mac) to allows a remotely started application to show up on a local machine, i.e. X11 forwarding.</p>
+<p>The -A argument allows you to set your project number (in my case UBOI0006).</p>
 <pre class="bash"><code>qinteractive -X -A UBOI0006 -l walltime=06:00:00</code></pre>
 <p>Load a python 2 compatible miniconda environment (optional).</p>
 <pre class="bash"><code>conda activate python2
 
 ## If you do not have miniconda, then make sure to module load python/2</code></pre>
-<p>After entering the qinteractive environment, you will need to reset environmental variables.</p>
-<pre class="bash"><code>CSMDATA=/glade/p/cesm/cseg/inputdata
+<p>After entering the qinteractive environment, you will need to set or reset the following environmental variables.</p>
+<pre class="bash"><code>## File path to inputdata
+CSMDATA=/glade/p/cesm/cseg/inputdata
+
+## File path to you cloned ctsm 
 CTSMROOT=/glade/work/katiem/git/ctsm_rcew
+
+## The site you want to create surface data files for
 SITE=US-Rwe</code></pre>
 <p>Next, run the PTCLMsublist</p>
 <pre class="bash"><code>./PTCLMsublist -l $SITE -d $CSMDATA -o --verbose --account=UBOI0003 --mach=cheyenne
@@ -981,7 +989,7 @@ SITE=US-Rwe</code></pre>
 </div>
 <div id="preparation-for-simulations" class="section level2">
 <h2>4. Preparation for Simulations</h2>
-<p>Within this section we will work through the spinup, post spinup, and simulation process. The majority of these instructions are taken from the CTSM 2019 tutorial practical 4 <a href="https://www.cgd.ucar.edu/events/2019/ctsm/files/practical4-wieder.pdf">link</a>. All of the practicals are incredibly useful and can be found <a href="https://www.cgd.ucar.edu/events/2019/ctsm/">here</a>.</p>
+<p>Within this section we will work through the spinup and post spinup needed to run a simulation. The majority of these instructions are taken from the CTSM 2019 tutorial practical 4 <a href="https://www.cgd.ucar.edu/events/2019/ctsm/files/practical4-wieder.pdf">link</a>. All of the practicals are incredibly useful and can be found <a href="https://www.cgd.ucar.edu/events/2019/ctsm/">here</a>.</p>
 <div id="spin-up" class="section level3">
 <h3>4.1 Spin Up</h3>
 <p>When working with soils, one needs to get to a steady state. In this case, the steady state is the equilibrium conditions given the climate forcing data used. One needs to assume a steady state in order to test transient conditions (i.e. hypotheses, changes to soil properties, CO2 scenarios, etc.). Therefore, the first step in the simulation process is to complete an “accelerated” spin up.</p>

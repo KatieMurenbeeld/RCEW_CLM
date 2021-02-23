@@ -262,10 +262,15 @@ conda activate python2
 ## If you do not have miniconda, then make sure to module load python/2
 ```
 
-After entering the qinteractive environment, you will need to reset environmental variables.
+After entering the qinteractive environment, you will need to set or reset the following environmental variables.
 ```{bash ptml_setenv, echo=TRUE, eval=FALSE}
+## File path to inputdata
 CSMDATA=/glade/p/cesm/cseg/inputdata
+
+## File path to you cloned ctsm 
 CTSMROOT=/glade/work/katiem/git/ctsm_rcew
+
+## The site you want to create surface data files for
 SITE=US-Rwe
 ```
 
@@ -322,7 +327,7 @@ The folders will have the following naming convention: 1x1_*site-name*. So for t
 
 ## 4. Preparation for Simulations
 
-Within this section we will work through the spinup, post spinup, and simulation process. The majority of these instructions are taken from the CTSM 2019 tutorial practical 4 [link](https://www.cgd.ucar.edu/events/2019/ctsm/files/practical4-wieder.pdf). All of the practicals are incredibly useful and can be found [here](https://www.cgd.ucar.edu/events/2019/ctsm/).
+Within this section we will work through the spinup and post spinup needed to run a simulation. The majority of these instructions are taken from the CTSM 2019 tutorial practical 4 [link](https://www.cgd.ucar.edu/events/2019/ctsm/files/practical4-wieder.pdf). All of the practicals are incredibly useful and can be found [here](https://www.cgd.ucar.edu/events/2019/ctsm/).
 
 ### 4.1 Spin Up
 

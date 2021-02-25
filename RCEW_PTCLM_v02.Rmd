@@ -754,6 +754,7 @@ qcmd -- ./case.build
 #### 5.6 Copy over the rpointer and case files from the original case
 
 The rpointer files are the restart pointer files which contain the restart filename written by each component of the model. These files will help the new case to read the correct files for restarting a simulation from a particular point. See more information about restarting a run [here](https://www.cesm.ucar.edu/models/cesm1.0/cesm/cesm_doc_1_0_4/x2094.html).
+
 ```{bash clone06, echo=TRUE, eval=FALSE}
 ## Copy over the rpointer files
 cp -avr /glade/scratch/katiem/Rwe1_CLM50postspin_001/run/rpointer.* /glade/scratch/katiem/Rwe1_CLM50histsp_h1e1_005/run/
@@ -766,6 +767,8 @@ ls
 ```
 
 #### 5.7 Copy over the archive output files
+
+Since this is a cloned case you will also need to write or copy over the output history files. If you were restarting a simulation from an exisiting (already run) case instead of a clone this step and the steps in 5.6 would not be necessary.
 
 ```{bash clone07, echo=TRUE, eval=FALSE}
 ## Next make a directory in the scratch archive and copy over the original files

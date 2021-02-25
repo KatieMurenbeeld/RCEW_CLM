@@ -1303,7 +1303,7 @@ echo &quot;hist_mfilt = 12&quot; &gt;&gt; user_nl_clm </code></pre>
 </div>
 <div id="copy-over-the-rpointer-and-case-files-from-the-original-case" class="section level4">
 <h4>5.6 Copy over the rpointer and case files from the original case</h4>
-<p>One thing that is different about this simulation is the reference to</p>
+<p>The rpointer files are the restart pointer files which contain the restart filename written by each component of the model. These files will help the new case to read the correct files for restarting a simulation from a particular point. See more information about restarting a run <a href="https://www.cesm.ucar.edu/models/cesm1.0/cesm/cesm_doc_1_0_4/x2094.html">here</a>.</p>
 <pre class="bash"><code>## Copy over the rpointer files
 cp -avr /glade/scratch/katiem/Rwe1_CLM50postspin_001/run/rpointer.* /glade/scratch/katiem/Rwe1_CLM50histsp_h1e1_005/run/
 

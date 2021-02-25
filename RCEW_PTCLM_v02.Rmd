@@ -122,7 +122,7 @@ CTSMROOT=/glade/work/katiem/git/ctsm_rcew
 cd $CTSMROOT/tools/PTCLM/PTCLM_sitedata
 ```
 
-There you will find three different text files. One for site data (PTCLMDATA_sitedata.txt), one for plant functional type data (PTCLMDATA_pftdata.txt), and one for soils data (PTCLMDATA_soildata.txt). 
+There you will find three different text files. One for site data (PTCLMDATA_sitedata.txt), one for soils data (PTCLMDATA_soildata.txt), and one for plant functional type data (PTCLMDATA_pftdata.txt). 
 
 The **PTCLMDATA_sitedata.txt** contains the following (comma separated) headers: site_code,name,state,lon,lat,elev,startyear,endyear,alignyear,timestep,campaign
 
@@ -151,13 +151,13 @@ The **PTCLMDATA_soildata.txt** contains the following (comma separated) headers:
 * **layer_sand%**: percent sand, used to set the soil texture
 * **layer_clay%**: percent clay, used to set the soil texture
 
-Soil data from Reynold's Mountain East was found at the [Dataset for Soil properties of Reynolds Mountain East a subcatchment of Reynolds Creek, Idaho ](https://doi.org/10.18122/B29T3T). For this instance I averaged the sand and clay contents. Soil data for other sites at RCEW can be found at the  [hydroshare website](https://www.hydroshare.org/group/143). 
+Soil data from Reynold's Mountain East was found at the [Dataset for Soil properties of Reynolds Mountain East a subcatchment of Reynolds Creek, Idaho ](https://doi.org/10.18122/B29T3T). For this example, I averaged the sand and clay contents. Soil data for other sites at RCEW can be found at the  [hydroshare website](https://www.hydroshare.org/group/143). 
 
 Add the following information to the **PTCLMDATA_soildata.txt** using your text editor:
 
 US-Rwe,-999,1,-999,36.32,20.92
 
-Within CLM the soil texture (percent sand and clay) is used to determine the soil's thermal and hydraulic properties (see the CLM tech note chapter 6.3 [Soil and Snow Thermal Properties](https://escomp.github.io/ctsm-docs/versions/release-clm5.0/html/tech_note/Soil_Snow_Temperatures/CLM50_Tech_Note_Soil_Snow_Temperatures.html#soil-and-snow-thermal-properties) and chapter 7 [Hydrology](https://escomp.github.io/ctsm-docs/versions/release-clm5.0/html/tech_note/Hydrology/CLM50_Tech_Note_Hydrology.html#).
+Within CLM the soil texture (percent sand and clay) is used to determine the soil's thermal and hydraulic properties (see the CLM tech note chapter 6.3 [Soil and Snow Thermal Properties](https://escomp.github.io/ctsm-docs/versions/release-clm5.0/html/tech_note/Soil_Snow_Temperatures/CLM50_Tech_Note_Soil_Snow_Temperatures.html#soil-and-snow-thermal-properties) and chapter 7 [Hydrology](https://escomp.github.io/ctsm-docs/versions/release-clm5.0/html/tech_note/Hydrology/CLM50_Tech_Note_Hydrology.html#)).
 
 *Advanced Note:* Soil texture data (%sand, %clay) is very important because the mineral soil hydraulic properties are calculated using only the Clapp-Hornberg formulation, which uses the %sand to determine saturated hydraulic conductivity. The specific Fortran code can be found in the  [FuncPedotranserMod.F90](https://github.com/ESCOMP/CTSM/blob/master/src/main/FuncPedotransferMod.F90). The outputs from this FuncPedotranserMod.F90 are called into other submodules of the CTSM/CLM code, specifically the [SoilStateInitTimeConst.F90](https://github.com/ESCOMP/CTSM/blob/master/src/biogeophys/SoilStateInitTimeConstMod.F90). All of this is quite a rabbit-hole to fall down, but if you want a better understanding of the model as a whole, read the above referenced chapters of the CLM tech note and have a look at the Soil*.F90 code on [github](https://github.com/ESCOMP/CTSM/tree/master/src/biogeophys).
 
@@ -173,7 +173,7 @@ Add the following information to the **PTCLMDATA_pftdata.txt** using your text e
 
 US-Rwe,100,9,0,0,0,0,0,0,0,0
 
-Plant data was inferred from the Ameriflux site description [here](https://ameriflux.lbl.gov/sites/siteinfo/US-Rwe). 
+Plant data was inferred from the Ameriflux site description [here](https://ameriflux.lbl.gov/sites/siteinfo/US-Rwe). At Rwe, 100% of the plants are broadleaf evergreen shrubs (i.e. sage brush).
 
 The list of pft indexes (or patch types) can be found [here](https://github.com/ESCOMP/CTSM/blob/master/src/main/PatchType.F90):
 

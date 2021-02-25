@@ -697,7 +697,7 @@ ls
 CTSMROOT=/glade/work/katiem/git/ctsm_rcew
 # Then, change to the PTCLM_sitedata folder
 cd $CTSMROOT/tools/PTCLM/PTCLM_sitedata</code></pre>
-<p>There you will find three different text files. One for site data (PTCLMDATA_sitedata.txt), one for plant functional type data (PTCLMDATA_pftdata.txt), and one for soils data (PTCLMDATA_soildata.txt).</p>
+<p>There you will find three different text files. One for site data (PTCLMDATA_sitedata.txt), one for soils data (PTCLMDATA_soildata.txt), and one for plant functional type data (PTCLMDATA_pftdata.txt).</p>
 <p>The <strong>PTCLMDATA_sitedata.txt</strong> contains the following (comma separated) headers: site_code,name,state,lon,lat,elev,startyear,endyear,alignyear,timestep,campaign</p>
 <ul>
 <li><strong>site_code</strong>: abbreviation for the tower site</li>
@@ -723,10 +723,10 @@ cd $CTSMROOT/tools/PTCLM/PTCLM_sitedata</code></pre>
 <li><strong>layer_sand%</strong>: percent sand, used to set the soil texture</li>
 <li><strong>layer_clay%</strong>: percent clay, used to set the soil texture</li>
 </ul>
-<p>Soil data from Reynold’s Mountain East was found at the <a href="https://doi.org/10.18122/B29T3T">Dataset for Soil properties of Reynolds Mountain East a subcatchment of Reynolds Creek, Idaho</a>. For this instance I averaged the sand and clay contents. Soil data for other sites at RCEW can be found at the <a href="https://www.hydroshare.org/group/143">hydroshare website</a>.</p>
+<p>Soil data from Reynold’s Mountain East was found at the <a href="https://doi.org/10.18122/B29T3T">Dataset for Soil properties of Reynolds Mountain East a subcatchment of Reynolds Creek, Idaho</a>. For this example, I averaged the sand and clay contents. Soil data for other sites at RCEW can be found at the <a href="https://www.hydroshare.org/group/143">hydroshare website</a>.</p>
 <p>Add the following information to the <strong>PTCLMDATA_soildata.txt</strong> using your text editor:</p>
 <p>US-Rwe,-999,1,-999,36.32,20.92</p>
-<p>Within CLM the soil texture (percent sand and clay) is used to determine the soil’s thermal and hydraulic properties (see the CLM tech note chapter 6.3 <a href="https://escomp.github.io/ctsm-docs/versions/release-clm5.0/html/tech_note/Soil_Snow_Temperatures/CLM50_Tech_Note_Soil_Snow_Temperatures.html#soil-and-snow-thermal-properties">Soil and Snow Thermal Properties</a> and chapter 7 <a href="https://escomp.github.io/ctsm-docs/versions/release-clm5.0/html/tech_note/Hydrology/CLM50_Tech_Note_Hydrology.html#">Hydrology</a>.</p>
+<p>Within CLM the soil texture (percent sand and clay) is used to determine the soil’s thermal and hydraulic properties (see the CLM tech note chapter 6.3 <a href="https://escomp.github.io/ctsm-docs/versions/release-clm5.0/html/tech_note/Soil_Snow_Temperatures/CLM50_Tech_Note_Soil_Snow_Temperatures.html#soil-and-snow-thermal-properties">Soil and Snow Thermal Properties</a> and chapter 7 <a href="https://escomp.github.io/ctsm-docs/versions/release-clm5.0/html/tech_note/Hydrology/CLM50_Tech_Note_Hydrology.html#">Hydrology</a>).</p>
 <p><em>Advanced Note:</em> Soil texture data (%sand, %clay) is very important because the mineral soil hydraulic properties are calculated using only the Clapp-Hornberg formulation, which uses the %sand to determine saturated hydraulic conductivity. The specific Fortran code can be found in the <a href="https://github.com/ESCOMP/CTSM/blob/master/src/main/FuncPedotransferMod.F90">FuncPedotranserMod.F90</a>. The outputs from this FuncPedotranserMod.F90 are called into other submodules of the CTSM/CLM code, specifically the <a href="https://github.com/ESCOMP/CTSM/blob/master/src/biogeophys/SoilStateInitTimeConstMod.F90">SoilStateInitTimeConst.F90</a>. All of this is quite a rabbit-hole to fall down, but if you want a better understanding of the model as a whole, read the above referenced chapters of the CLM tech note and have a look at the Soil*.F90 code on <a href="https://github.com/ESCOMP/CTSM/tree/master/src/biogeophys">github</a>.</p>
 <p>The <strong>PTCLMDATA_pftdata.txt</strong> contains the following (comma separated) headers: site_code,pft_f1,pft_c1,pft_f2,pft_c2,pft_f3,pft_c3,pft_f4,pft_c4,pft_f5,pft_c5</p>
 <ul>
@@ -736,7 +736,7 @@ cd $CTSMROOT/tools/PTCLM/PTCLM_sitedata</code></pre>
 </ul>
 <p>Add the following information to the <strong>PTCLMDATA_pftdata.txt</strong> using your text editor:</p>
 <p>US-Rwe,100,9,0,0,0,0,0,0,0,0</p>
-<p>Plant data was inferred from the Ameriflux site description <a href="https://ameriflux.lbl.gov/sites/siteinfo/US-Rwe">here</a>.</p>
+<p>Plant data was inferred from the Ameriflux site description <a href="https://ameriflux.lbl.gov/sites/siteinfo/US-Rwe">here</a>. At Rwe, 100% of the plants are broadleaf evergreen shrubs (i.e. sage brush).</p>
 <p>The list of pft indexes (or patch types) can be found <a href="https://github.com/ESCOMP/CTSM/blob/master/src/main/PatchType.F90">here</a>:</p>
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:300px; overflow-x: scroll; width:400px; ">
 <table class=" lightable-paper" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto;">

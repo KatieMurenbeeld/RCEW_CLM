@@ -254,13 +254,14 @@ qinteractive -X -A UBOI0006 -l walltime=06:00:00
 
 Activate a python 2 compatible miniconda environment (optional). 
 
-**Note:** Setting up miniconda environments is beyond the scope of this technical note. Sometimes there can be conflicts between 
 
 ```{bash ptclm_py2, echo=TRUE, eval=FALSE}
 conda activate python2
 
 ## If you do not have miniconda, then make sure to module load python/2
 ```
+**Note:** Setting up miniconda environments is beyond the scope of this technical note. Sometimes there can be conflicts between modules on Cheyenne and modules in the minoconda environment. One useful thing to do if you are running into issues is to run *module purge* before loading the other modules, load python 2, and not worry about using a miniconda environment. 
+
 
 After entering the qinteractive environment, you will need to set or reset the following environmental variables.
 ```{bash ptml_setenv, echo=TRUE, eval=FALSE}
@@ -276,11 +277,10 @@ SITE=US-Rwe
 
 Next, run the PTCLMsublist
 ```{bash ptclm_sublist, echo=TRUE, eval=FALSE}
-./PTCLMsublist -l $SITE -d $CSMDATA -o --verbose --account=UBOI0003 --mach=cheyenne
+./PTCLMsublist -l $SITE -d $CSMDATA -o --verbose --account=UBOI0006 --mach=cheyenne
 
-## If you do not have miniconda, then make sure to module load python/2
-## When you run the PTCLM scripts make sure to have python in the command path
-# python PTCLMsublist -l $SITE -d $CSMDATA -o --verbose --account=UBOI0003 --mach=cheyenne
+## If you do not have miniconda, then make sure to module load python/2. When you run the PTCLM scripts make sure to have python in the command path
+# python PTCLMsublist -l $SITE -d $CSMDATA -o --verbose --account=UBOI0006 --mach=cheyenne
 ```
 
 PTCLMsublist will output a command to copy and paste into the terminal. It will look something like this...
@@ -302,7 +302,7 @@ Again, this process can take a long time. You may need to run this command multi
 
 ### 3.4 Where does my data go?
 
-Running
+Running...
 ```{bash data_loc, echo=TRUE, eval=FALSE}
 ./PTCLMmkdata --help
 >...
@@ -327,7 +327,7 @@ The folders will have the following naming convention: 1x1_*site-name*. So for t
 
 ## 4. Preparation for Simulations
 
-Within this section we will work through the spinup and post spinup needed to run a simulation. The majority of these instructions are taken from the CTSM 2019 tutorial practical 4 [link](https://www.cgd.ucar.edu/events/2019/ctsm/files/practical4-wieder.pdf). All of the practicals are incredibly useful and can be found [here](https://www.cgd.ucar.edu/events/2019/ctsm/).
+Within this section we will work through the spinup and post spinup needed to run a simulation. The majority of these instructions are taken from the CTSM 2019 tutorial [practical 4](https://www.cgd.ucar.edu/events/2019/ctsm/files/practical4-wieder.pdf). All of the practicals are incredibly useful and can be found [here](https://www.cgd.ucar.edu/events/2019/ctsm/).
 
 ### 4.1 Spin Up
 
@@ -338,12 +338,12 @@ Make sure you are in your CTSMROOT (the base directory where "cime" and "compone
 ```{bash spinup_createnew, echo=TRUE, eval=FALSE}
 cd cime/scripts/
 
-./create_newcase --compset 2000_DATM%GSWP3v1_CLM50%BGC_SICE_SOCN_SROF_SGLC_SWAV --res f09_g17 --case /glade/work/katiem/SITS_cases/Rwe1_CLM50spinup_001 --run-unsupported --project UBOI0003
+./create_newcase --compset 2000_DATM%GSWP3v1_CLM50%BGC_SICE_SOCN_SROF_SGLC_SWAV --res f09_g17 --case /glade/work/katiem/SITS_cases/Rwe1_CLM50spinup_001 --run-unsupported --project UBOI0006
 ```
 
 In order to create a new case there are 3 required arguments: compset, res, and case. 
 
-The **compset** argument sets the "component set". This specifies set all the model components used in the simulation. For example, this sets the river routing scheme or essentially turns of a model component by using a "stub". For example, many times land only simulations can use the stub sea-ice component. All the compsets can be found [here](https://www.cesm.ucar.edu/models/cesm2/config/compsets.html).
+The **compset** argument sets the "component set". This specifies or sets all the model components used in the simulation. For example, this sets the river routing scheme or essentially turns of a model component by using a "stub". Many times land only simulations can use the stub sea-ice component. All the compsets can be found [here](https://www.cesm.ucar.edu/models/cesm2/config/compsets.html).
 
 The **res** argument sets the model's resolution. All resolutions are listed [here](https://www.cesm.ucar.edu/models/cesm2/config/grids.html).
 
@@ -365,12 +365,12 @@ As an aside, there are four basic steps to setting up and running CTSM simulatio
 
 1. **Create** the **new case**
 2. Following some changes to the environment variables, **setup** the case 
-3. The **build the model** (sometimes after more changes to environment variables)
+3. **Build the model** (sometimes after more changes to environment variables)
 4. Once the model is built, **submit** the case to Cheyenne's batch processing system, pbs
 
 More information can be found in [practical 1](https://www.cgd.ucar.edu/events/2019/ctsm/files/practical1-lombardozzi.pdf) from the above mentioned 2019 CTSM tutorial.
 
-Once the new case is created, move into the newly created case directory. Within the case directory you will find the scripts to run the case setup (case.setup), build the model (script), and submit the case to the batch system (case.submit). 
+Once the new case is created, move into the newly created case directory. Within the case directory you will find the scripts to run the case setup (case.setup), build the model (case.build), and submit the case to the batch system (case.submit). 
 
 ```{bash spinup_cdcase, echo=TRUE, eval=FALSE}
 cd /glade/work/katiem/SITS_cases/Rwe1_CLM50spinup_001
@@ -396,16 +396,14 @@ You can also use ./xmlquery to check the current values of the variables.
 >	COST_PES: 36
 ```
 
-After you've updated the above variables, you are now ready to setup the case. The case.setup script lives
+After you've updated the above variables, you are now ready to setup the case.
 
 ```{bash spinup_casesetup, echo=TRUE, eval=FALSE}
 # Remember you are still in the case directory
-
 ./case.setup
-
 ```
 
-Once your case is setup you will update many more variables using the ./xmlchange command. *Note:* you are still in the Rwe1_CLM50spinup_001 case directory. 
+Once your case is setup you will update many more variables using the ./xmlchange command. **Note:** you are still in the Rwe1_CLM50spinup_001 case directory. 
 
 ```{bash env_run01, echo=TRUE, eval=FALSE}
 ./xmlchange --file env_run.xml --id CLM_FORCE_COLDSTART --val on
@@ -439,7 +437,7 @@ A note about STOP_OPTION, STOP_N,and RESUBMIT. These three variables determine t
 
 REST_N sets the number of restart files created. This is useful if you know you want to restart from a case. In this case a restart file is created for every 10 years. REST_N could also be set to create a restart file every one year or every 100 years. 
 
-Next, you will point to the domain files you created in Section 3. If you'll notice the file paths here (ATM_DOMAIN_PATH, LND_DOMAIN_PATH). It is optional to copy and paste the surface data files created in section 3 to a different directory. If you do not, the ATM_ and LND_DOMAIN_PATH would be /glade/work/katiem/git/ctsm_rcew/tools/PTCLM/mydatafiles/1x1_US-Rwe
+Next, you will point to the domain files you created in Section 3. Notice the file paths set for ATM_DOMAIN_PATH and LND_DOMAIN_PATH. It is optional to copy and paste the surface data files created in section 3 to a different directory. If you do not, the ATM_ and LND_DOMAIN_PATH would be /glade/work/katiem/git/ctsm_rcew/tools/PTCLM/mydatafiles/1x1_US-Rwe
 
 ```{bash spinup_domain, echo=TRUE, eval=FALSE}
 
@@ -478,6 +476,7 @@ Double check the your namelist file (user_nl_clm) using your text editor of choi
 vim user_nl_clm
 
 ## or...
+
 cat user_nl_clm
 ```
 
@@ -498,19 +497,20 @@ To check on the progress you can see the jobs you've submitting using the qstat 
 qstat -u katiem  # the -u argument is for user, so really it is qstat -u $USER
 ```
 
-You can also check your scratch or scratch archive to check on the progress of the spinup case.
+You can also check your scratch or scratch archive to check on the progress of the spinup case (i.e. the creation of output files in the case's scratch archive or the creation of files and logs in the run directory for the case)
 
 ```{bash sp_scratch, echo=TRUE, eval=FALSE}
-cd /glade/scratch/$USER/archive/$CASE/
+cd /glade/scratch/$USER/archive/$CASE/lnd/hist
 ls 
 
 # or...
+
 cd /glade/scratch/$USER/$CASE/run
 ls
 
 ```
 
-Congratulations! If all went well, you now have a "spunup" case (one .nc file) to work with. 
+Congratulations! If all went well, you now have a "spunup" case (.nc file(s)) to work with. 
 
 The output data will be found in your scratch directory. For example, the output data (i.e. history, *hist*, files) from this example would be found in the following directory:
 
@@ -525,7 +525,7 @@ Now that we have 500 years of spinup complete, one has the option to build up to
 1. Create a new case and go to new case directory
 2. ./xmlchanges before running case.setup
 3. case.setup
-4. Many more ./xmlchanges - changes to run from 1850-1901 - and nl changes
+4. Many more ./xmlchanges - changes to run from 1850-1901 - and namelist changes
 5. Build the model
 6. Submit case 
 7. ./xmlchanges - 1901 - 1980 
@@ -540,7 +540,7 @@ cd /glade/work/katiem/git/ctsm_sits/cime/scripts
 
 # Create a new case
 ./create_newcase --compset HIST_DATM%GSWP3v1_CLM50%BGC_SICE_SOCN_SROF_SGLC_SWAV --res
-f09_g17 --case /glade/work/katiem/SITS_cases/Rwe1_CLM50postspin001 --run-unsupported --project UBOI0003
+f09_g17 --case /glade/work/katiem/SITS_cases/Rwe1_CLM50postspin001 --run-unsupported --project UBOI0006
 
 # Go to the new case directory
 cd /glade/work/katiem/SITS_cases/Rwe1_CLM50postspin001
@@ -614,7 +614,7 @@ Make updates to the user namelist files.
 
 ```{bash post_spin04.2, echo=TRUE, eval=FALSE}
 echo "mapalgo = 'nn','nn','nn','nn','nn'" >> user_nl_datm
-echo "finidat = '/glade/scratch/katiem/archive/Rwe1_CLM50spinup_004/rest/0501-01-01-00000/Rwe1_CLM50spinup_004.clm2.r.0501-01-01-00000.nc'" >> user_nl_clm
+echo "finidat = '/glade/scratch/katiem/archive/Rwe1_CLM50spinup_001/rest/0501-01-01-00000/Rwe1_CLM50spinup_001.clm2.r.0501-01-01-00000.nc'" >> user_nl_clm
 echo "fsurdat = '/glade/work/katiem/SITS_data/surfdata_1x1pt_US-Rwe_hist_16pfts_Irrig_CMIP6_simyr2000_c200721.nc'" >> user_nl_clm
 
 echo "do_transient_crops= .false." >> user_nl_clm
@@ -654,7 +654,7 @@ As a reminder, you should still be in the case directory /glade/work/katiem/SITS
 
 ```{bash post_spin08, echo=TRUE, eval=FALSE}
 ## cd into the case run directory on scratch
-cd /glade/scratch/katiem/Rwe1_CLM50postsp_001/run
+cd /glade/scratch/katiem/Rwe1_CLM50postspin_001/run
 ## remove the bin file
 rm Rwe1_CLM50postspin001.datm.rs1.1901-01-01-00000.bin
 ```
@@ -697,7 +697,7 @@ Cloning is fairly straight forward, and is similar to creating a new case. The r
 cd /glade/work/katiem/git/ctsm_sits/cime/scripts/
 
 ## Creat the clone
-./create_clone --case /glade/work/katiem/SITS_cases/Rwe1_CLM50_clone --clone /glade/work/katiem/SITS_cases/Rwe1_CLM50postspin001 --project UBOI0003
+./create_clone --case /glade/work/katiem/SITS_cases/Rwe1_CLM50_clone --clone /glade/work/katiem/SITS_cases/Rwe1_CLM50postspin001 --project UBOI0006
 
 ## Move into the cloned case directory
 cd /glade/work/katiem/SITS_cases/Rwe1_CLM50_clone
@@ -796,7 +796,7 @@ As noted in the above sections, model output (i.e. history files) are located in
 
 ```{bash ncview, echo=TRUE, eval=FALSE}
 ## Change to the history output directory
-cd /glade/scratch/katiem/archive/Rwe1_CLM50postsp_001/lnd/hist
+cd /glade/scratch/katiem/archive/Rwe1_CLM50postspin_001/lnd/hist
 
 ## Check that you have ncview loaded
 module list
@@ -806,7 +806,7 @@ module load ncview
 
 ## Next, look at the output. Use the * to open all .nc files in ncview
 
-ncview Rwe1_CLM50postsp_001*.nc
+ncview Rwe1_CLM50postspin_001*.nc
 ```
 
 The user interface allows one to quickly view a specific output.

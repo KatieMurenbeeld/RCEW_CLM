@@ -1245,7 +1245,7 @@ qcmd -- ./case.build
 <li>Clone the historic case and move to cloned case directory</li>
 <li>./xmlchanges before running case.setup</li>
 <li>case.setup –reset</li>
-<li>./xmlchanges and nl changes</li>
+<li>./xmlchanges and namelist changes</li>
 <li>Build the case</li>
 <li>Copy over the rpointer and case files from the original case</li>
 <li>Copy over the archive output files</li>
@@ -1253,7 +1253,7 @@ qcmd -- ./case.build
 </ol>
 <div id="clone-the-historic-case" class="section level4">
 <h4>5.1 Clone the Historic Case</h4>
-<p>Cloning is fairly straight forward, and is similar to creating a new case. The res and compset arguments are not needed. The case argument is for the new (cloned) case. The clone argument is the path to the case being cloned.</p>
+<p>Cloning is fairly straight forward, and is similar to creating a new case. The –res and –compset arguments are not needed. The –case argument is for the new (cloned) case. The –clone argument is the path to the case being cloned.</p>
 <pre class="bash"><code>## Change to the cime scripts directory
 cd /glade/work/katiem/git/ctsm_sits/cime/scripts/
 
@@ -1276,14 +1276,14 @@ cd /glade/work/katiem/SITS_cases/Rwe1_CLM50_clone</code></pre>
 </div>
 <div id="case.setup-reset" class="section level4">
 <h4>5.3 case.setup –reset</h4>
-<p>Why run the reset argument?</p>
+<p>Changing any of the XML settings in env_mach_pes.xml requires ./case.setup –-reset. Since this is changing from the cloned case, we need to use the –reset argument.</p>
 <pre class="bash"><code>./case.setup --reset</code></pre>
 </div>
 <div id="more-.xmlchanges-and-namelistl-changes" class="section level4">
 <h4>5.4 More ./xmlchanges and namelistl changes</h4>
 <pre class="bash"><code># Complete xml changes and nl changes for history output.
 ./xmlchange RUN_TYPE=branch
-./xmlchange RUN_REFCASE=Rwe1_CLM50histsp_1980_001
+./xmlchange RUN_REFCASE=Rwe1_CLM50postspin_001
 ./xmlchange RUN_REFDATE=1981-01-01
 ./xmlchange STOP_OPTION=nyears
 ./xmlchange STOP_N=10
@@ -1305,9 +1305,9 @@ echo &quot;hist_mfilt = 12&quot; &gt;&gt; user_nl_clm </code></pre>
 <h4>5.6 Copy over the rpointer and case files from the original case</h4>
 <p>One thing that is different about this simulation is the reference to</p>
 <pre class="bash"><code>## Copy over the rpointer files
-cp -avr /glade/scratch/katiem/Rwe1_CLM50histsp_1980_001/run/rpointer.* /glade/scratch/katiem/Rwe1_CLM50histsp_h1e1_005/run/
+cp -avr /glade/scratch/katiem/Rwe1_CLM50postspin_001/run/rpointer.* /glade/scratch/katiem/Rwe1_CLM50histsp_h1e1_005/run/
 
-cp -avr /glade/scratch/katiem/Rwe1_CLM50histsp_1980_001/run/Rwe1_CLM50histsp_1980_001* /glade/scratch/katiem/Rwe1_CLM50histsp_h1e1_005/run/
+cp -avr /glade/scratch/katiem/Rwe1_CLM50postspin_001/run/Rwe1_CLM50postspin_001* /glade/scratch/katiem/Rwe1_CLM50histsp_h1e1_005/run/
 
 ## Check to see that they copied over correctly
 cd /glade/scratch/katiem/Rwe1_CLM50histsp_h1e1_005/run/
@@ -1320,7 +1320,7 @@ cd /glade/scratch/katiem/archive/
 
 mkdir Rwe1_CLM50histsp_h1e1_005
 
-cp -avr /glade/scratch/katiem/archive/Rwe1_CLM50histsp_1980_001/* /glade/scratch/katiem/archive/Rwe1_CLM50histsp_h1e1_005/
+cp -avr /glade/scratch/katiem/archive/Rwe1_CLM50postspin_001/* /glade/scratch/katiem/archive/Rwe1_CLM50histsp_h1e1_005/
 
 ## Check to make sure they copied over correctly
 cd /glade/scratch/katiem/archive/Rwe1_CLM50histsp_h1e1_005/lnd/hist

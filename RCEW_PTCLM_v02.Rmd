@@ -681,7 +681,7 @@ General Steps:
 1. Clone the historic case and move to cloned case directory
 2. ./xmlchanges before running case.setup
 3. case.setup --reset
-4. ./xmlchanges and nl changes
+4. ./xmlchanges and namelist changes
 5. Build the case
 6. Copy over the rpointer and case files from the original case
 7. Copy over the archive output files
@@ -690,7 +690,7 @@ General Steps:
 
 #### 5.1 Clone the Historic Case
 
-Cloning is fairly straight forward, and is similar to creating a new case. The res and compset arguments are not needed. The case argument is for the new (cloned) case. The clone argument is the path to the case being cloned.
+Cloning is fairly straight forward, and is similar to creating a new case. The --res and --compset arguments are not needed. The --case argument is for the new (cloned) case. The --clone argument is the path to the case being cloned.
 
 ```{bash clone, echo=TRUE, eval=FALSE}
 ## Change to the cime scripts directory
@@ -719,7 +719,7 @@ cd /glade/work/katiem/SITS_cases/Rwe1_CLM50_clone
 
 #### 5.3 case.setup --reset
 
-Why run the reset argument?
+Changing any of the XML settings in env_mach_pes.xml requires ./case.setup –-reset. Since this is changing from the cloned case, we need to use the --reset argument.
 
 ```{bash clone03, echo=TRUE, eval=FALSE}
 ./case.setup --reset
@@ -730,7 +730,7 @@ Why run the reset argument?
 ```{bash clone04, echo=TRUE, eval=FALSE}
 # Complete xml changes and nl changes for history output.
 ./xmlchange RUN_TYPE=branch
-./xmlchange RUN_REFCASE=Rwe1_CLM50histsp_1980_001
+./xmlchange RUN_REFCASE=Rwe1_CLM50postspin_001
 ./xmlchange RUN_REFDATE=1981-01-01
 ./xmlchange STOP_OPTION=nyears
 ./xmlchange STOP_N=10
@@ -756,9 +756,9 @@ qcmd -- ./case.build
 One thing that is different about this simulation is the reference to 
 ```{bash clone06, echo=TRUE, eval=FALSE}
 ## Copy over the rpointer files
-cp -avr /glade/scratch/katiem/Rwe1_CLM50histsp_1980_001/run/rpointer.* /glade/scratch/katiem/Rwe1_CLM50histsp_h1e1_005/run/
+cp -avr /glade/scratch/katiem/Rwe1_CLM50postspin_001/run/rpointer.* /glade/scratch/katiem/Rwe1_CLM50histsp_h1e1_005/run/
 
-cp -avr /glade/scratch/katiem/Rwe1_CLM50histsp_1980_001/run/Rwe1_CLM50histsp_1980_001* /glade/scratch/katiem/Rwe1_CLM50histsp_h1e1_005/run/
+cp -avr /glade/scratch/katiem/Rwe1_CLM50postspin_001/run/Rwe1_CLM50postspin_001* /glade/scratch/katiem/Rwe1_CLM50histsp_h1e1_005/run/
 
 ## Check to see that they copied over correctly
 cd /glade/scratch/katiem/Rwe1_CLM50histsp_h1e1_005/run/
@@ -773,7 +773,7 @@ cd /glade/scratch/katiem/archive/
 
 mkdir Rwe1_CLM50histsp_h1e1_005
 
-cp -avr /glade/scratch/katiem/archive/Rwe1_CLM50histsp_1980_001/* /glade/scratch/katiem/archive/Rwe1_CLM50histsp_h1e1_005/
+cp -avr /glade/scratch/katiem/archive/Rwe1_CLM50postspin_001/* /glade/scratch/katiem/archive/Rwe1_CLM50histsp_h1e1_005/
 
 ## Check to make sure they copied over correctly
 cd /glade/scratch/katiem/archive/Rwe1_CLM50histsp_h1e1_005/lnd/hist
